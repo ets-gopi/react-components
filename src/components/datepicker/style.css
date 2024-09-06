@@ -1,22 +1,59 @@
 .main{
-    width:300px;
-    height: 400px;
+    width:350px;
+    height: 450px;
     /* border:1px solid red; */
     background-color: #121212;
     padding: 10px;
     border-radius: 5px;
 }
-.header_text{
+.date_picker_header{
+    /* border:1px solid red; */
+    margin-bottom: 8px;
+}
+.date_picker_header_text{
     color:#B5B5B5;
     font-size: 20px;
 }
-.selected_date{
+.date_picker_header_selected_date{
     color: #fff;
     font-size: 30px;
     margin-top: 10px;
 }
-.selected_date h4{
+.date_picker_header_selected_date h4{
     padding: 0;
     margin: 0;
     letter-spacing: 1.2px;
+}
+
+
+.date_picker_navigation_bar{
+    /* border:1px solid green; */
+    display: flex;
+    color: #fff;
+    justify-content: space-between;
+    font-size: 20px;
+}
+.date_picker_navigation_bar > .selecting_year_month {
+    /* border:1px solid pink; */
+    position: relative;
+}
+.display_year_container{
+     border:1px solid pink;
+     position: relative;
+     height:300px;
+     color: aqua;
+     z-index: 1;
+     background-color: black;
+}
+.date_picker_navigation_bar > .selecting_year_month >.month{
+    margin-right: 10px;
+}
+.date_picker_navigation_bar > .selecting_year_month >.year{
+    margin-right: 10px;
+}
+.date_picker_navigation_bar > .selecting_month{
+    /* border:1px solid purple; */
+}
+.right_angled_icon{
+    margin-left: 20px;
 }
