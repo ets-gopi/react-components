@@ -1,0 +1,35 @@
+import React from "react";
+import years from "../../utils/displayYears";
+import "./style.css";
+const DisplayYears = ({
+  selected_year,
+  onHandleYear,
+  onHandleToggleButton,
+}) => {
+  return (
+    <React.Fragment>
+      <div>DisplayYears</div>
+      <div className="display_year_container">
+        {years.map((year, ind) => {
+          return (
+            <button
+              type="button"
+              key={ind}
+              className={`button ${
+                year === selected_year ? "select_year" : "unselect_year"
+              }`}
+              onClick={() => {
+                onHandleYear(year);
+                onHandleToggleButton(false);
+              }}
+            >
+              {year}
+            </button>
+          );
+        })}
+      </div>
+    </React.Fragment>
+  );
+};
+
+export default DisplayYears;
