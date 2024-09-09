@@ -7,12 +7,13 @@ import "./style.css";
 import format from "../../utils/formatDate";
 import years, { months, daysOfWeek } from "../../utils/displayYears";
 import DisplayYears from "./displayYears";
+import DisplayDates from "./displayDates";
 
 const Datepicker = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [toggleYearButton, setToggleYearButton] = useState(false);
   const [userSelectedYear, setUserSelectedYear] = useState(null);
-  console.log("years", years, months);
+  //console.log("years", years, months);
   useEffect(() => {
     if (userSelectedYear !== null) {
          // Create a new date instance instead of mutating the current date
@@ -85,18 +86,21 @@ const Datepicker = () => {
               />
             ) : null}
             <div
-              style={{
-                position: "absolute",
-                top: "50px",
-                color: "#fff",
-                width: "100%",
-                display: "flex",
-                justifyContent: "space-between",
-              }}
+              className="daysOfWeek"
             >
               {daysOfWeek.map((week, ind) => {
                 return <span key={ind}>{week[0]}</span>;
               })}
+            </div>
+            <div
+              style={{
+                position: "absolute",
+                top: "100px",
+                color: "#fff",
+                width: "100%",
+              }}
+            >
+                <DisplayDates date={currentDate}/>
             </div>
           </div>
         </div>

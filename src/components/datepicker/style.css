@@ -65,7 +65,7 @@
   background-color: #f5f5f5;
   color: black;
 }
-.select_year {
+.selected {
   background-color: #04aa6d;
 }
 .date_picker_navigation_bar > .selecting_year_month > .month {
@@ -79,4 +79,42 @@
 }
 .right_angled_icon {
   margin-left: 20px;
+}
+
+/* displaying the daysofweeks */
+.daysOfWeek{
+  position: absolute;
+  top: 50px;
+  color: #fff;
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(7,1fr);
+  gap:5px;
+}
+.daysOfWeek span{
+  width: 40px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 5px;
+  cursor: pointer;
+  /* border:1px solid red */
+}
+
+/* displaying dates */
+#calendar-days{
+  display: grid;
+  grid-template-columns: repeat(7,1fr);
+  gap:5px;
+}
+#calendar-days span {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 5px;
+  cursor: pointer;
+  /* border:1px solid red */
 }

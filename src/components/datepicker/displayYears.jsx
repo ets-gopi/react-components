@@ -8,7 +8,6 @@ const DisplayYears = ({
 }) => {
   return (
     <React.Fragment>
-      <div>DisplayYears</div>
       <div className="display_year_container">
         {years.map((year, ind) => {
           return (
@@ -16,7 +15,7 @@ const DisplayYears = ({
               type="button"
               key={ind}
               className={`button ${
-                year === selected_year ? "select_year" : "unselect_year"
+                year === selected_year ? "selected" : "unselect_year"
               }`}
               onClick={() => {
                 onHandleYear(year);
