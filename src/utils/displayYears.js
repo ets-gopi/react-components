@@ -1,12 +1,12 @@
 let years = [];
-const startYear = 1900;
+const startYear = 2000;
 const endYear = 2100;
-// generate the years between the startYear and endYear.
 
+
+// generate the years between the startYear and endYear.
 for (let year = startYear; year < endYear; year++) {
   years.push(year);
 }
-
 export const months = [
   "January",
   "February",

@@ -12,17 +12,25 @@ import DisplayDates from "./displayDates";
 const Datepicker = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [toggleYearButton, setToggleYearButton] = useState(false);
+  const [userDate,setUserDate]=useState(null);
   const [userSelectedYear, setUserSelectedYear] = useState(null);
-  //console.log("years", years, months);
+  const [userSelectedDate, setUserSelectedDate] = useState(null);
   useEffect(() => {
     if (userSelectedYear !== null) {
-         // Create a new date instance instead of mutating the current date
-      const newDate = new Date(currentDate);
+      // Create a new date instance instead of mutating the current date
+      const newDate = new Date(userDate ? userDate :currentDate);
       newDate.setFullYear(userSelectedYear);
-      setCurrentDate(newDate);
-    }
+      setUserDate(newDate);
+    }  
   }, [userSelectedYear]);
-
+  useEffect(() => {
+    if (userSelectedDate !== null) {
+      // Create a new date instance instead of mutating the current date
+      const newDate = new Date(userDate ? userDate : currentDate);
+      newDate.setDate(userSelectedDate);
+      setUserDate(newDate);
+    }  
+  }, [userSelectedDate]);
   return (
     <React.Fragment>
       <div>
@@ -31,18 +39,16 @@ const Datepicker = () => {
           <div className="date_picker_header">
             <span className="date_picker_header_text">select Date</span>
             <div className="date_picker_header_selected_date">
-              <h4>{format(currentDate)}</h4>
+              <h4>{format(userDate ? userDate : currentDate)}</h4>
             </div>
           </div>
           {/* date-picker navigation container*/}
           <div style={{ position: "relative" }}>
             <div className="date_picker_navigation_bar">
               <div className="selecting_year_month">
-                <span className="month">{months[currentDate?.getMonth()]}</span>
+                <span className="month">{months[userDate?userDate.getMonth():currentDate?.getMonth()]}</span>
                 <span className="year">
-                  {userSelectedYear
-                    ? userSelectedYear
-                    : currentDate?.getFullYear()}
+                  {userDate?userDate.getFullYear():currentDate?.getFullYear()}
                 </span>
                 <span>
                   {toggleYearButton ? (
@@ -60,27 +66,49 @@ const Datepicker = () => {
                   )}
                 </span>
               </div>
-              <div className="selecting_month">
-                <FaAngleLeft
-                  onClick={() => {
-                    console.log("checking the left angled button");
-                  }}
-                />
-                <FaAngleRight
-                  className="right_angled_icon"
-                  onClick={() => {
-                    console.log("checking the right angled button");
-                  }}
-                />
-              </div>
+              {
+                toggleYearButton ? null : (<div className="selecting_month">
+                  <button className="month_button" onClick={() => {
+                      console.log("checking the left angled button");
+                      const newDate=new Date(userDate ? userDate : currentDate)
+                      const month=newDate.getMonth();
+                      if(month===0){
+                        const year=newDate.getFullYear();
+                        newDate.setFullYear(year-1);
+                        newDate.setMonth(11);
+                      }else{
+                        newDate.setMonth(month-1);
+                      }
+                      
+                      setUserDate(newDate)
+
+                    }} disabled={userDate?.getMonth()===0 && userDate?.getFullYear()===2000}>
+                  <FaAngleLeft/>
+                  </button>
+                 <button className="month_button right_angled_icon"
+                    onClick={() => {
+                      console.log("checking the right angled button");
+                      const newDate=new Date(userDate ? userDate : currentDate)
+                      const month=newDate.getMonth();
+                      if(month===11){
+                        const year=newDate.getFullYear();
+                        newDate.setFullYear(year+1);
+                        newDate.setMonth(0);
+                      }else{
+                        newDate.setMonth(month+1);
+                      }
+                      setUserDate(newDate)
+
+                    }} disabled={userDate?.getMonth()===11 && userDate?.getFullYear()===2099}>
+                 <FaAngleRight />
+                 </button>
+                </div>)
+              }
             </div>
             {toggleYearButton ? (
               <DisplayYears
-                selected_year={
-                  userSelectedYear
-                    ? userSelectedYear
-                    : currentDate.getFullYear()
-                }
+                selected_year = {userDate?userDate.getFullYear():currentDate?.getFullYear()}
+                current_year={currentDate.getFullYear()}
                 onHandleYear={setUserSelectedYear}
                 onHandleToggleButton={setToggleYearButton}
               />
@@ -100,7 +128,7 @@ const Datepicker = () => {
                 width: "100%",
               }}
             >
-                <DisplayDates date={currentDate}/>
+              <DisplayDates current_date={currentDate.getDate()}  date={userDate ? userDate : currentDate} onHandleDate={setUserSelectedDate}/>
             </div>
           </div>
         </div>

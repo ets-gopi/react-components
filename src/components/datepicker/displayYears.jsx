@@ -3,6 +3,7 @@ import years from "../../utils/displayYears";
 import "./style.css";
 const DisplayYears = ({
   selected_year,
+  current_year,
   onHandleYear,
   onHandleToggleButton,
 }) => {
@@ -15,8 +16,8 @@ const DisplayYears = ({
               type="button"
               key={ind}
               className={`button ${
-                year === selected_year ? "selected" : "unselect_year"
-              }`}
+                year === current_year ? "current" : ""
+              } ${year === selected_year ? "selected" : "unselected"}`}
               onClick={() => {
                 onHandleYear(year);
                 onHandleToggleButton(false);
