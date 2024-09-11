@@ -1,9 +1,9 @@
 import './App.css';
-import { DatePicker } from './components';
+import { DatePicker , VideoPlayer,TimeTable} from './components';
 function App() {
   return (
     <div className="">
-     <DatePicker/>
+     <TimeTable />
     </div>
   );
 }
