@@ -1,5 +1,5 @@
 import React from 'react'
-import "./style.css"
+import style from "./video.module.css";
 import { v1 } from '../../assets';
 import { FaPlay } from "react-icons/fa";
 import { FaPause } from "react-icons/fa";
@@ -11,37 +11,35 @@ import { FaExpand } from "react-icons/fa";
 const VideoPlayer = () => {
   return (
     <React.Fragment>
-      <div className='video-container'>
-        <div className='player'>
-          <video className='video'>
+      <div className={style.video_container}>
+        <div className={style.player}>
+          <video className={style.video}>
             <source src={v1} type='video/mp4'/>
           </video>
           {/* show controls */}
-          <div className='show-controls'>
-            <div className="controls-container">
+          <div className={style.show_controls}>
+            <div className={style.controls_container}>
               {/* progress bar */}
-              <div className='progress-range' title='Seek'>
-                <div className="progress-bar">
+              <div className={style.progress_range} title='Seek'>
+                <div className={style.progress_bar}>
 
                 </div>
-
               </div>
               {/* controls group */}
-              <div className="controls-group">
+              <div className={style.controls_group}>
                 {/* Left Controls */}
-                <div className="left-controls">
+                <div className={style.left_controls}>
                   {/* Play Controls */}
-                  <div className="play-controls">
-<FaPlay onClick={()=>{
-  console.log("asas");
-  
-}}/>
+                  <div className={style.play_controls}>
+                    <FaPlay/> 
                   </div>
                   {/* Volume Controls */}
-                  <div className='volume-controls'>
-                    <div className="volume-icon"></div>
-                    <div className="volume-range" title='Change Volume'>
-                      <div className="volume-bar">
+                  <div className={style.volume_controls}>
+                    <div className={style.volume_icon}>
+                      <FaVolumeUp/>
+                    </div>
+                    <div className={style.volume_range} title='Change Volume'>
+                      <div className={style.volume_bar}>
 
                       </div>
                     </div>
@@ -50,18 +48,24 @@ const VideoPlayer = () => {
 
                 </div>
                 {/* Right Controls */}
-                <div className="right-controls">
+                <div className={style.right_controls}>
                   {/* Control Speed */}
-                  <div className="speed">
-
+                  <div className={style.speed}>
+                    <select name="speed" id="speed">
+                      <option value="0.5x">0.5x</option>
+                      <option value="0.75x">0.75x</option>
+                      <option value="1.0x">1.0x</option>
+                      <option value="1.5x">1.5x</option>
+                      <option value="2.0x">2.0x</option>
+                    </select>
                   </div>
                   {/* Time */}
-                  <div className="time">
-
+                  <div className={style.time}>
+                    00:00/00:00
                   </div>
                   {/* Full Screen */}
-                  <div className="full-screen">
-
+                  <div className={style.full_screen}>
+                      <FaExpand/>
                   </div>
 
                 </div>

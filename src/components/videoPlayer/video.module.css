@@ -1,0 +1,154 @@
+
+.video_container{
+    display: flex;
+    justify-content: center;
+    background-image: url("data:image/svg+xml,%3Csvg width='6' height='6' viewBox='0 0 6 6' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%234f4f51' fill-opacity='0.4' fill-rule='evenodd'%3E%3Cpath d='M5 0h1L0 6V5zM6 5v1H5z'/%3E%3C/g%3E%3C/svg%3E");
+    min-height: 100vh;
+    background-color: #e3e3e3;
+    position: relative;
+    align-items: center;
+}
+
+.player{
+    /* border:1px solid red; */
+    max-width:80vw;
+    min-width: 300px;
+    border: 5px solid black;
+    border-radius: 10px;
+    background: black;
+    cursor: pointer;
+    position: relative;
+}
+.video{
+    border-radius: 5px;
+    width: 100%;
+    height: auto;
+}
+
+/* Controls Section */
+.show_controls{
+    /* border:1px solid red; */
+    position:absolute;
+    width:100%;
+    height: 30%;
+    bottom: 0;
+    /* background-color: dodgerblue; */
+    cursor:default;
+   
+}
+.controls_container{
+    /* border:1px solid red; */
+    position:absolute;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    height: 95px;
+    bottom: -5px;
+    border-radius: 5px;
+    align-items: center;
+    opacity: 0;
+    transition: all 1s ease-out 0.2s;
+    padding: 10px;
+}
+.show_controls:hover .controls_container{
+    opacity: 1;
+}
+
+/* progress bar */
+.progress_range{
+    width: 100%;
+    height: 9px;
+    background-color: rgba(202, 202, 202, 0.5);
+    border-radius: 8px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    position: relative;
+    transition: height 0.1s ease-in-out;
+}
+
+.progress_range:hover{
+    height: 10px;
+}
+
+.progress_bar{
+    width: 20%;
+    height: 100%;
+    border-radius: 8px;
+    background-color: dodgerblue;
+}
+
+.controls_group{
+    display: flex;
+    justify-content: space-between;
+    color: #fff;
+    font-size: 20px;
+    align-items: center;
+}
+
+/* Left Controls */
+
+.left_controls{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* border: 1px solid red; */
+    gap: 15px;
+}
+/* Play Controls */ 
+
+.play_controls{
+    /* border:1px solid red; */
+}
+
+/* Volume */
+.volume_controls{
+    /* border:1px solid red; */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap:5px;
+}
+.volume_range {
+    height: 8px;
+    width: 100px;
+    background: rgba(70, 70, 70, 0.5);
+    border-radius: 8px;
+    cursor: pointer;
+    position: relative;
+  }
+  .volume_icon{
+
+  }
+  .volume_bar{
+    width: 50%;
+    height: 100%;
+    background-color: #e3e3e3;
+    border-radius: 8px;
+
+  }
+
+  /* Right Controls */
+  .right_controls{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* border: 1px solid red; */
+    gap: 15px;
+
+  }
+
+  .speed{
+
+  }
+  .time{
+
+  }
+  .full_screen{
+
+  }
+select {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+  }

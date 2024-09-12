@@ -124,12 +124,12 @@
 }
 
 /* displaying dates */
-#calendar-days{
+#calendar_days{
   display: grid;
   grid-template-columns: repeat(7,1fr);
   gap:5px;
 }
-#calendar-days span {
+#calendar_days span {
   width: 40px;
   height: 40px;
   display: flex;

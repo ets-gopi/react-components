@@ -3,7 +3,7 @@ import { FaCaretDown } from "react-icons/fa";
 import { FaCaretUp } from "react-icons/fa";
 import { FaAngleRight } from "react-icons/fa";
 import { FaAngleLeft } from "react-icons/fa";
-import "./style.css";
+import style from "./datepicker.module.css";
 import format from "../../utils/formatDate";
 import years, { months, daysOfWeek } from "../../utils/displayYears";
 import DisplayYears from "./displayYears";
@@ -34,20 +34,20 @@ const Datepicker = () => {
   return (
     <React.Fragment>
       <div>
-        <div className="main">
+        <div className={style.main}>
           {/* date-picker header */}
-          <div className="date_picker_header">
-            <span className="date_picker_header_text">select Date</span>
-            <div className="date_picker_header_selected_date">
+          <div className={style.date_picker_header}>
+            <span className={style.date_picker_header_text}>select Date</span>
+            <div className={style.date_picker_header_selected_date}>
               <h4>{format(userDate ? userDate : currentDate)}</h4>
             </div>
           </div>
           {/* date-picker navigation container*/}
           <div style={{ position: "relative" }}>
-            <div className="date_picker_navigation_bar">
-              <div className="selecting_year_month">
-                <span className="month">{months[userDate?userDate.getMonth():currentDate?.getMonth()]}</span>
-                <span className="year">
+            <div className={style.date_picker_navigation_bar}>
+              <div className={style.selecting_year_month}>
+                <span className={style.month}>{months[userDate?userDate.getMonth():currentDate?.getMonth()]}</span>
+                <span className={style.year}>
                   {userDate?userDate.getFullYear():currentDate?.getFullYear()}
                 </span>
                 <span>
@@ -67,8 +67,8 @@ const Datepicker = () => {
                 </span>
               </div>
               {
-                toggleYearButton ? null : (<div className="selecting_month">
-                  <button className="month_button" onClick={() => {
+                toggleYearButton ? null : (<div className={style.selecting_month}>
+                  <button className={style.month_button} onClick={() => {
                       console.log("checking the left angled button");
                       const newDate=new Date(userDate ? userDate : currentDate)
                       const month=newDate.getMonth();
@@ -85,7 +85,7 @@ const Datepicker = () => {
                     }} disabled={userDate?.getMonth()===0 && userDate?.getFullYear()===2000}>
                   <FaAngleLeft/>
                   </button>
-                 <button className="month_button right_angled_icon"
+                 <button className={`${style.month_button} ${style.right_angled_icon}`}
                     onClick={() => {
                       console.log("checking the right angled button");
                       const newDate=new Date(userDate ? userDate : currentDate)
@@ -114,7 +114,7 @@ const Datepicker = () => {
               />
             ) : null}
             <div
-              className="daysOfWeek"
+              className={style.daysOfWeek}
             >
               {daysOfWeek.map((week, ind) => {
                 return <span key={ind}>{week[0]}</span>;
