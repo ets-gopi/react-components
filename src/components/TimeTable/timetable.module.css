@@ -5,7 +5,7 @@
 }
 
 .button_container{
-    border:1px solid red;
+    /* border:1px solid red; */
     text-align: end;
 }
 
@@ -27,14 +27,42 @@
     height: calc(100vh - 60px);
    
 }
+
+/* Displaying Tasks */
 .display_tasks{
-    border:2px solid red;
+    /* border:2px solid red; */
     flex-basis: 25%;
     overflow-y: auto;
+    position: relative;
+    padding: 10px;
+    font-size: 20px;
+}
+
+.display_tt{
+    /* border: 1px solid green; */
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    background-color: #ccc;
+    border-radius: 10px;
+    margin: 10px;
+    cursor: pointer;
+}
+
+.display_tt span{
+    font-weight: 600;
+}
+
+.selected{
+    background-color:#04AA6D;
+    color:white;
 }
 .time_table{
-    border:2px solid red;
+    /* border:2px solid red; */
     flex-basis: 75%;
+    padding: 15px;
 }
 
 .input_group{

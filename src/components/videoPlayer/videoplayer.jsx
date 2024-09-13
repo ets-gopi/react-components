@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useRef, useState } from 'react'
 import style from "./video.module.css";
 import { v1 } from '../../assets';
 import { FaPlay } from "react-icons/fa";
@@ -9,11 +9,29 @@ import { FaVolumeUp } from "react-icons/fa";
 import { FaVolumeOff } from "react-icons/fa";
 import { FaExpand } from "react-icons/fa";
 const VideoPlayer = () => {
+  const videoRef=useRef(null);
+  const playerRef=useRef(null);
+  const [isPlay,setIsPlay]=useState(false);
+  // handle the play button
+  const handlePlay=()=>{
+    videoRef.current.play();
+    setIsPlay(!isPlay);
+  };
+
+  // handle the pause button
+  const handlePause=()=>{
+    videoRef.current.pause();
+    setIsPlay(!isPlay);
+  };
+
+  // handle the full-screen requirement
+  const handleFullScreen=()=>{
+  }
   return (
     <React.Fragment>
       <div className={style.video_container}>
-        <div className={style.player}>
-          <video className={style.video}>
+        <div className={style.player} ref={playerRef}>
+          <video className={style.video} ref={videoRef}>
             <source src={v1} type='video/mp4'/>
           </video>
           {/* show controls */}
@@ -31,7 +49,7 @@ const VideoPlayer = () => {
                 <div className={style.left_controls}>
                   {/* Play Controls */}
                   <div className={style.play_controls}>
-                    <FaPlay/> 
+                    {isPlay ? <FaPause onClick={handlePause}/>: <FaPlay onClick={handlePlay}/> }
                   </div>
                   {/* Volume Controls */}
                   <div className={style.volume_controls}>
@@ -50,7 +68,7 @@ const VideoPlayer = () => {
                 {/* Right Controls */}
                 <div className={style.right_controls}>
                   {/* Control Speed */}
-                  <div className={style.speed}>
+                  <div className={style.speed} title='playBack Rate'>
                     <select name="speed" id="speed">
                       <option value="0.5x">0.5x</option>
                       <option value="0.75x">0.75x</option>
@@ -65,7 +83,7 @@ const VideoPlayer = () => {
                   </div>
                   {/* Full Screen */}
                   <div className={style.full_screen}>
-                      <FaExpand/>
+                      <FaExpand onClick={handleFullScreen}/>
                   </div>
 
                 </div>
