@@ -90,10 +90,12 @@ const TimeTable = () => {
             <h2 className={style.task_heading}>
               {tasks[userSelectId]?.purpose}
             </h2>
-            <CalendarView
-              date={tasks[userSelectId]?.startDate}
-              duration={tasks[userSelectId]?.duration}
-            />
+            {tasks.length > 0 && (
+              <CalendarView
+                date={tasks[userSelectId]?.startDate}
+                duration={tasks[userSelectId]?.duration}
+              />
+            )}
           </div>
         </div>
       </div>

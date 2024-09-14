@@ -80,6 +80,11 @@
   width: 100%;
   height: calc(10%);
   color: #424242;
+  border-radius: 10px;
+  padding: 5px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 5px;
+  text-align: center;
 }
 
 /* Calendar view   */
@@ -92,6 +97,7 @@
   overflow-y: auto;
   background-color: #f5f5f5;
   border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 .calendar_view_header {
   /* border: 1px solid red; */
