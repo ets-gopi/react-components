@@ -23,6 +23,7 @@ const DisplayTimeTable = ({
       >
         <span>{label}</span>
         <MdDelete
+          style={{ color: "#f44336" }}
           onClick={(e) => {
             e.stopPropagation();
             handleDelete(task.id);

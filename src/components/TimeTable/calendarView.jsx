@@ -68,7 +68,9 @@ const CalendarView = ({ date, duration }) => {
                 <button
                   key={ind}
                   className={`${
-                    date === new Date(userDate).getDate() ? style.selected : ""
+                    date === new Date(userDate).getDate()
+                      ? style.selected
+                      : style.unselected
                   }`}
                 >
                   {date}

@@ -87,9 +87,9 @@ const TimeTable = () => {
           </div>
           {/* Displaying the time table */}
           <div className={`${style.time_table}`}>
-            <h1 className={style.task_heading}>
+            <h2 className={style.task_heading}>
               {tasks[userSelectId]?.purpose}
-            </h1>
+            </h2>
             <CalendarView
               date={tasks[userSelectId]?.startDate}
               duration={tasks[userSelectId]?.duration}

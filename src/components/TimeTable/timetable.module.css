@@ -1,25 +1,28 @@
 .time_table_container {
   /* border:1px solid red; */
   height: 100vh;
-  background-color: lightblue;
+  background-color: #e3f2fd;
 }
 
 .button_container {
   /* border:1px solid red; */
   text-align: end;
+  padding: 5px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
 }
 
 .create_button {
   border: none;
-  color: white;
-  padding: 16px 32px;
+  color: #fff;
+  padding: 10px 15px;
   text-align: center;
   text-decoration: none;
   display: inline-block;
   font-size: 16px;
-  margin: 4px 2px;
-  background-color: #04aa6d;
+  background-color: #ff7043;
   cursor: pointer;
+  border-radius: 10px;
 }
 .group_container {
   /* border:2px solid red; */
@@ -30,12 +33,14 @@
 
 /* Displaying Tasks */
 .display_tasks {
-  /* border: 2px solid red; */
+  /* border: 2px solid black; */
   flex-basis: 25%;
   overflow-y: auto;
   position: relative;
   padding: 10px;
-  font-size: 20px;
+  font-size: 18px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .display_tt {
@@ -45,33 +50,36 @@
   justify-content: space-between;
   align-items: center;
   padding: 10px;
-  background-color: #ccc;
+  background-color: #ffffff;
   border-radius: 10px;
   margin-bottom: 10px;
   cursor: pointer;
-}
-
-.display_tt span {
-  font-weight: 600;
+  color: #424242;
 }
 
 .selected {
-  background-color: #04aa6d;
-  color: white;
+  background-color: #ff7043;
+  color: #fff;
+}
+.unselected {
+  background-color: #e3f2fd;
+  color: #424242;
 }
 
 /* Time Table */
 .time_table {
-  /* border: 2px solid red; */
   flex-basis: 75%;
   padding: 10px;
   position: relative;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .task_heading {
   /* border: 2px solid red; */
   width: 100%;
   height: calc(10%);
+  color: #424242;
 }
 
 /* Calendar view   */
@@ -82,6 +90,8 @@
   width: 100%;
   height: calc(90%);
   overflow-y: auto;
+  background-color: #f5f5f5;
+  border-radius: 10px;
 }
 .calendar_view_header {
   /* border: 1px solid red; */
@@ -89,6 +99,10 @@
   position: relative;
   display: flex;
   justify-content: space-between;
+  background-color: #1565c0;
+  color: #ffffff;
+  padding: 5px;
+  border-top-right-radius: 10px;
 }
 .cv_months {
   /* border: 1px solid red; */
@@ -104,6 +118,9 @@
   text-align: center;
   text-decoration: none;
   border: none;
+  background-color: #90caf9;
+  color: #ffffff;
+  font-size: 25px;
 }
 .cv_year_month {
   /* border: 1px solid red; */
@@ -125,6 +142,10 @@
 .cv_days_of_week button {
   cursor: pointer;
   height: 30px;
+  color: #424242;
+  background-color: #ffebee;
+  border: 1px solid gray;
+  /* border-radius: 10px; */
 }
 .cv_dates_of_month {
   /* border: 1px solid red; */
@@ -138,6 +159,10 @@
   cursor: pointer;
   text-align: center;
   text-decoration: none;
+
+  /* background-color: #e3f2fd; */
+  border: 1px solid gray;
+  /* border-radius: 10px; */
 }
 
 .input_group {
