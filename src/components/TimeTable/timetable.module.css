@@ -66,6 +66,13 @@
   color: #424242;
 }
 
+/* .unselected:disabled {
+  background-color: #cccccc;
+  color: #666666;
+  cursor: not-allowed;
+  opacity: 0.6; 
+} */
+
 /* Time Table */
 .time_table {
   flex-basis: 75%;
