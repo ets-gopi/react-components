@@ -56,23 +56,53 @@
   cursor: pointer;
   color: #424242;
 }
-
 .selected {
-  background-color: #ff7043;
-  color: #fff;
+  background-color: #ff7043 !important;
+  color: #fff !important;
+}
+/* .selected {
+  background-color: #ff7043 !important;
+  color: #fff !important;
 }
 .unselected {
-  background-color: #e3f2fd;
-  color: #424242;
+  background-color: #e3f2fd !important;
+  color: #424242 !important;
+}
+.current_date{
+  background-color: #04AA6D;
+  color: #fff;
 }
 
-/* .unselected:disabled {
-  background-color: #cccccc;
-  color: #666666;
-  cursor: not-allowed;
-  opacity: 0.6; 
+.unselected:disabled {
+  background-color: #cccccc !important;
+  color: #666666 !important;
+  cursor: not-allowed !important;
+  opacity: 0.6 !important; 
 } */
 
+.disabled {
+  background-color: lightgray;
+  color: #888;
+  cursor: not-allowed !important;
+}
+
+.enabled {
+  background-color: #e3f2fd;
+  color: #424242;
+  cursor: pointer !important;
+}
+
+.startDate {
+  background-color: #4CAF50; /* Green background for start date */
+  color: white;
+  border: 2px solid #388E3C;
+}
+
+.endDate {
+  background-color: #f44336; /* Red background for end date */
+  color: white;
+  border: 2px solid #d32f2f;
+}
 /* Time Table */
 .time_table {
   flex-basis: 75%;

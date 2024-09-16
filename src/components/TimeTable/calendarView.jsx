@@ -3,10 +3,51 @@ import style from "./timetable.module.css";
 import { FaAngleRight } from "react-icons/fa";
 import { FaAngleLeft } from "react-icons/fa";
 import { daysOfWeek, months } from "../../utils/displayYears";
+import DateDisplay from "./dateDisplay";
+
+
 const CalendarView = ({ date, duration }) => {
-  console.log(date, duration);
+  //console.log(date, duration);
   const [userDate, setUserDate] = useState(null);
   const [dates, setDates] = useState([]);
+  const [userEndDate,setUserEndDate]=useState(null);
+  const [userStartDate,setUserStartDate]=useState(null);
+  const handleMonths=(name)=>{
+    const date=new Date(userDate);
+    const userstartdate=new Date(userStartDate);
+    const userenddate=new Date(userEndDate);
+
+    //current details of date
+    const month=date.getMonth();
+    const year=date.getFullYear();
+
+    // end date of specfic user
+    const e_month=userenddate.getMonth();
+    const e_year=userenddate.getFullYear();
+    const e_date=userenddate.getDate();
+
+    // start date of a specific user
+    const s_month=userstartdate.getMonth();
+    const s_year=userstartdate.getFullYear();
+    //console.log("s_month",s_month,"month",month,"e_month",e_month);
+    
+    switch(name){
+      case "prev":
+        if((month > s_month && year === s_year) || (year > s_year)){
+          date.setMonth(month-1);
+          setUserDate(date);
+        }
+        break;
+      case "next":
+        if((month < e_month && year === e_year) || (year < e_year)){
+          date.setMonth(month+1);
+          setUserDate(date);
+        }
+        break;
+      default :
+        console.log("Unknown");
+    }
+  }
   useEffect(() => {
     if (userDate !== null) {
       const year = new Date(userDate).getFullYear();
@@ -30,7 +71,11 @@ const CalendarView = ({ date, duration }) => {
   }, [userDate]);
   useEffect(() => {
     const newDate = new Date(date);
+    const userenddate=new Date(date);
+    userenddate.setDate(userenddate.getDate() + Number(duration));
     setUserDate(newDate);
+    setUserEndDate(userenddate);
+    setUserStartDate(newDate);
   }, [date, duration]);
 
   return (
@@ -40,10 +85,14 @@ const CalendarView = ({ date, duration }) => {
           {/* button container for separating months */}
           <div className={style.cv_months}>
             <button>
-              <FaAngleLeft />
+              <FaAngleLeft onClick={()=>{
+                handleMonths("prev");
+              }}/>
             </button>
             <button>
-              <FaAngleRight />
+              <FaAngleRight onClick={()=>{
+                handleMonths("next");
+              }}/>
             </button>
           </div>
           {/* container for displaying the month and year */}
@@ -63,18 +112,9 @@ const CalendarView = ({ date, duration }) => {
           </div>
           {/* Dates of the month */}
           <div className={style.cv_dates_of_month}>
-            {dates?.map((date, ind) => {
+            {dates.length>0 && dates.map((date, ind) => {
               return (
-                <button
-                  key={ind}
-                  className={`${
-                    date === new Date(userDate).getDate()
-                      ? style.selected
-                      : style.unselected
-                  }`}
-                >
-                  {date}
-                </button>
+                <DateDisplay key={ind} date={date} userDate={userDate} startDate={userStartDate} endDate={userEndDate} />
               );
             })}
           </div>

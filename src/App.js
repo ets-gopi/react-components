@@ -3,9 +3,8 @@ import { DatePicker, VideoPlayer, TimeTable } from "./components";
 function App() {
   return (
     <div className="">
-      <VideoPlayer />
+      <TimeTable />
     </div>
   );
-}
-
+};
 export default App;
