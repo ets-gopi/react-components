@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import style from "./timetable.module.css";
 const DateDisplay = ({date,userDate,startDate,endDate}) => {
 
@@ -19,7 +19,7 @@ const DateDisplay = ({date,userDate,startDate,endDate}) => {
     // get the startDate and endDate for the user duration
     const start_date=this_month===s_month && date === s_date && this_year===s_year;
     const end_date=this_month===e_month && date === e_date && this_year===e_year;
-
+    
     // buttonClass
     let buttonClass = style.enabled;
     if(start_date){
@@ -29,7 +29,10 @@ const DateDisplay = ({date,userDate,startDate,endDate}) => {
     }else if(isDisabled){
         buttonClass=style.disabled
     }
-    
+    useEffect(()=>{
+        const enabledButtons=window.document.getElementsByClassName(style.enabled);
+        console.log(enabledButtons);
+    })
     
   return (
     <React.Fragment>

@@ -3,6 +3,7 @@ import style from "./timetable.module.css";
 import { FaAngleRight } from "react-icons/fa";
 import { FaAngleLeft } from "react-icons/fa";
 import { daysOfWeek, months } from "../../utils/displayYears";
+import format from "../../utils/formatDate";
 import DateDisplay from "./dateDisplay";
 
 
@@ -72,7 +73,7 @@ const CalendarView = ({ date, duration }) => {
   useEffect(() => {
     const newDate = new Date(date);
     const userenddate=new Date(date);
-    userenddate.setDate(userenddate.getDate() + Number(duration));
+    userenddate.setDate(userenddate.getDate() + Number(duration) -1);
     setUserDate(newDate);
     setUserEndDate(userenddate);
     setUserStartDate(newDate);
@@ -84,16 +85,21 @@ const CalendarView = ({ date, duration }) => {
         <div className={style.calendar_view_header}>
           {/* button container for separating months */}
           <div className={style.cv_months}>
-            <button>
+            <button disabled={userStartDate?.getMonth()===userDate?.getMonth() && userStartDate?.getFullYear()===userDate?.getFullYear()}>
               <FaAngleLeft onClick={()=>{
                 handleMonths("prev");
               }}/>
             </button>
-            <button>
+            <button disabled={userDate?.getMonth()===userEndDate?.getMonth()}>
               <FaAngleRight onClick={()=>{
                 handleMonths("next");
               }}/>
             </button>
+          </div>
+
+          {/* container for display the userSelected Date */}
+          <div className={style.cv_selected_date}>
+            {format(new Date())}
           </div>
           {/* container for displaying the month and year */}
           <div className={style.cv_year_month}>
@@ -112,9 +118,9 @@ const CalendarView = ({ date, duration }) => {
           </div>
           {/* Dates of the month */}
           <div className={style.cv_dates_of_month}>
-            {dates.length>0 && dates.map((date, ind) => {
+            {dates?.map((date, ind) => {
               return (
-                <DateDisplay key={ind} date={date} userDate={userDate} startDate={userStartDate} endDate={userEndDate} />
+                <DateDisplay key={ind} date={date} userDate={userDate} startDate={userStartDate} endDate={userEndDate} duration={duration}/>
               );
             })}
           </div>
