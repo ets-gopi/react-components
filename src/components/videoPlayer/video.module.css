@@ -74,8 +74,8 @@
     height: 100%;
     border-radius: 8px;
     background-color: dodgerblue;
+    transition: all 0.5s ease;
 }
-
 .controls_group{
     display: flex;
     justify-content: space-between;
@@ -98,6 +98,18 @@
 .play_controls{
     /* border:1px solid red; */
 }
+
+/* play button */
+.play_controls > .play:hover{
+   color: dodgerblue;
+   cursor: pointer;
+}
+
+/* pause button */
+.play_controls > .pause:hover{
+    color: dodgerblue;
+    cursor: pointer;
+ }
 
 /* Volume */
 .volume_controls{
@@ -133,22 +145,34 @@
     align-items: center;
     /* border: 1px solid red; */
     gap: 15px;
-
   }
 
   .speed{
-
+    
   }
   .time{
+    font-size: 16px;
 
   }
   .full_screen{
-
+    font-size: 25px;
   }
 select {
     width: 100%;
-    padding: 8px 10px;
-    border: 1px solid #ccc;
+    padding: 5px;
     border-radius: 4px;
     box-sizing: border-box;
+    border: none;
+    background-color:transparent;
+    color: #fff;
+    font-size: 18px;
+    cursor: pointer;
+  }
+select > option{
+    background: rgba(0, 0, 0, 0.9);
+    border: none;
+    font-size: 14px;
+  }
+  select:focus{
+    outline: none;
   }
