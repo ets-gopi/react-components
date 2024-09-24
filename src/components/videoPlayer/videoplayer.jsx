@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import style from "./video.module.css";
 import { v1 ,v2 ,v3 } from '../../assets';
 import { FaPlay } from "react-icons/fa";
@@ -15,6 +15,7 @@ const VideoPlayer = () => {
   const currentTimeRef=useRef(null);
   const [isPlay,setIsPlay]=useState(false);
   const [progress,setProgress]=useState(0);
+  const progressRangeRef=useRef(null);
   // handle the play button
   const handlePlay=()=>{
     videoRef.current.play();
@@ -38,9 +39,7 @@ const VideoPlayer = () => {
     setProgress(val);
     //displayTime(3850)
     durationRef.current.textContent=displayTime(videoRef.current.duration);
-    currentTimeRef.current.textContent=displayTime(videoRef.current.currentTime);
-
-    
+    currentTimeRef.current.textContent=displayTime(videoRef.current.currentTime);  
   }
 
   // action to handle the on completion of video.
@@ -63,6 +62,18 @@ const VideoPlayer = () => {
       return `${minute > 9 ? minute : `0${minute}`}:${secs > 9 ? secs  : `0${secs}`}`
     }
   }
+
+  const handleProgressRange=(e)=>{
+    //console.log(progressRangeRef.current.offsetWidth,e.nativeEvent.offsetX);
+    const newTime=(e.nativeEvent.offsetX/progressRangeRef.current.offsetWidth);
+    //console.log(newTime);
+    videoRef.current.currentTime=newTime * videoRef.current.duration;
+    setProgress(newTime * 100);
+    if(videoRef.current.paused){
+      videoRef.current.play();
+      setIsPlay(true);
+    }
+  }
     
   return (
     <React.Fragment>
@@ -75,7 +86,7 @@ const VideoPlayer = () => {
           <div className={style.show_controls}>
             <div className={style.controls_container}>
               {/* progress bar */}
-              <div className={style.progress_range} title='Seek'>
+              <div className={style.progress_range} title='Seek' ref={progressRangeRef} onClick={handleProgressRange}>
                 <div className={style.progress_bar} style={{"width":`${progress}%`}}>
 
                 </div>
