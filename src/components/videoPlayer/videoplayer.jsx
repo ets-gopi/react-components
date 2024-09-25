@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 import style from "./video.module.css";
-import { v1 ,v2 ,v3 } from '../../assets';
+import { v1 ,v2 ,v3 ,v5} from '../../assets';
 import { FaPlay } from "react-icons/fa";
 import { FaPause } from "react-icons/fa";
 import { FaVolumeDown } from "react-icons/fa";
@@ -14,8 +14,12 @@ const VideoPlayer = () => {
   const durationRef=useRef(null);
   const currentTimeRef=useRef(null);
   const [isPlay,setIsPlay]=useState(false);
+  const [volume,setVolume]=useState(null);
   const [progress,setProgress]=useState(0);
   const progressRangeRef=useRef(null);
+  const volumeRangeRef=useRef(null);
+  const [volumeProgress,setVolumeProgress]=useState(100);
+  
   // handle the play button
   const handlePlay=()=>{
     videoRef.current.play();
@@ -74,13 +78,42 @@ const VideoPlayer = () => {
       setIsPlay(true);
     }
   }
+  const handleVolumeProgress=(e)=>{
+    //console.log(e.nativeEvent.offsetX,volumeRangeRef.current.offsetWidth,videoRef.current.volume);
+    let volume =e.nativeEvent.offsetX /volumeRangeRef.current.offsetWidth;
+    
+    if(volume < 0.1){
+      volume=0;
+    }
+    if(volume>0.9){
+      volume=1
+    }
+    videoRef.current.volume=volume;
+    setVolumeProgress(volume*100);
+    setVolume(volume);
+  }
+  const handleVolumeIcon =(e)=>{
+    console.log(e.currentTarget.id);
+    switch(e.currentTarget.id){
+      case "volume_off":
+
+    }
+    
+  }
+
+  console.log(volume);
+
+
     
   return (
     <React.Fragment>
       <div className={style.video_container}>
         <div className={style.player} ref={playerRef}>
-          <video className={style.video} ref={videoRef} onEnded={handleOnEnded} onCanPlay={handleUpdateProgressBar} onTimeUpdate={handleUpdateProgressBar}>
-            <source src={v3} type='video/mp4'/>
+          <video className={style.video} ref={videoRef} onEnded={handleOnEnded} onCanPlay={()=>{
+            handleUpdateProgressBar();
+            setVolume(videoRef.current.volume);
+          }} onTimeUpdate={handleUpdateProgressBar}>
+            <source src={v5} type='video/mp4'/>
           </video>
           {/* show controls */}
           <div className={style.show_controls}>
@@ -101,11 +134,19 @@ const VideoPlayer = () => {
                   </div>
                   {/* Volume Controls */}
                   <div className={style.volume_controls}>
-                    <div className={style.volume_icon}>
-                      <FaVolumeUp/>
+                    <div className={style.volume_icon}  >
+                      {
+                        volume >= 0.7  && <span onClick={handleVolumeIcon} id='volume-up'><FaVolumeUp /></span>
+                      }
+                      {
+                        volume > 0 && volume < 0.7  && <span  onClick={handleVolumeIcon}  id='volume-down' ><FaVolumeDown /></span>
+                      }
+                      {
+                        volume ===0  && <span  onClick={handleVolumeIcon}  id='volume-off'><FaVolumeOff/></span>
+                      }
                     </div>
-                    <div className={style.volume_range} title='Change Volume'>
-                      <div className={style.volume_bar}>
+                    <div className={style.volume_range} title='Change Volume' ref={volumeRangeRef} onClick={handleVolumeProgress}>
+                      <div className={style.volume_bar} style={{"width":`${volumeProgress}%`}}>
 
                       </div>
                     </div>
@@ -128,7 +169,6 @@ const VideoPlayer = () => {
                   {/* Time */}
                   <div className={style.time}>
                     <span className={style.currentTime} ref={currentTimeRef}></span>/<span className={style.duration} ref={durationRef}></span>
-
                   </div>
                   {/* Full Screen */}
                   <div className={style.full_screen}>
