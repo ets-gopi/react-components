@@ -8,6 +8,28 @@ import { FaVolumeMute } from "react-icons/fa";
 import { FaVolumeUp } from "react-icons/fa";
 import { FaVolumeOff } from "react-icons/fa";
 import { FaExpand } from "react-icons/fa";
+let prevVolume=null,fullscreen=false;
+  /* View in fullscreen */
+  function openFullscreen(elem) {
+    if (elem.requestFullscreen) {
+      elem.requestFullscreen();
+    } else if (elem.webkitRequestFullscreen) { /* Safari */
+      elem.webkitRequestFullscreen();
+    } else if (elem.msRequestFullscreen) { /* IE11 */
+      elem.msRequestFullscreen();
+    }
+  }
+  
+  /* Close fullscreen */
+  function closeFullscreen() {
+    if (document.exitFullscreen) {
+      document.exitFullscreen();
+    } else if (document.webkitExitFullscreen) { /* Safari */
+      document.webkitExitFullscreen();
+    } else if (document.msExitFullscreen) { /* IE11 */
+      document.msExitFullscreen();
+    }
+  }
 const VideoPlayer = () => {
   const videoRef=useRef(null);
   const playerRef=useRef(null);
@@ -18,8 +40,9 @@ const VideoPlayer = () => {
   const [progress,setProgress]=useState(0);
   const progressRangeRef=useRef(null);
   const volumeRangeRef=useRef(null);
-  const [volumeProgress,setVolumeProgress]=useState(100);
-  
+  const [volumeProgress,setVolumeProgress]=useState(100);  
+  const [isMuted,setIsMuted]=useState(false);
+  const [playBackRate,setPlayBackRate]=useState(1.0);
   // handle the play button
   const handlePlay=()=>{
     videoRef.current.play();
@@ -34,11 +57,16 @@ const VideoPlayer = () => {
 
   // handle the full-screen requirement
   const handleFullScreen=()=>{
+  if(document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement){
+    closeFullscreen()
+  }else{
+  openFullscreen(playerRef.current)
+  }
   }
 
   // handle the progress bar when video is loaded.
   const handleUpdateProgressBar=()=>{
-    console.log("current time", videoRef.current.currentTime,"total",videoRef.current.duration);
+    //console.log("current time", videoRef.current.currentTime,"total",videoRef.current.duration);
     const val=(videoRef.current.currentTime/videoRef.current.duration) * 100;
     setProgress(val);
     //displayTime(3850)
@@ -91,17 +119,41 @@ const VideoPlayer = () => {
     videoRef.current.volume=volume;
     setVolumeProgress(volume*100);
     setVolume(volume);
+    prevVolume=volume;
+    setIsMuted(false);
   }
-  const handleVolumeIcon =(e)=>{
-    console.log(e.currentTarget.id);
-    switch(e.currentTarget.id){
-      case "volume_off":
+  const toggleVolume =(e)=>{   
+    if(videoRef.current.volume){
+      setVolume(videoRef.current.volume)
+      prevVolume=videoRef.current.volume;
+      videoRef.current.volume=0;
+      setVolumeProgress(0);
+      setIsMuted(true);
+    }else{
+      if(videoRef.current.volume===0 && prevVolume===0){
+        videoRef.current.volume=1;
+        prevVolume=videoRef.current.volume;
+        setVolume(1);
+        setVolumeProgress(100);
+      }else{
+        setVolume(prevVolume)
+        videoRef.current.volume=prevVolume;
+        setVolumeProgress(prevVolume*100);
+        
+      }
+      setIsMuted(false);
+    }    
+  }
 
-    }
+  const handlePlayBackRate=(e)=>{
+    console.log(e.target.value);
+    setPlayBackRate(parseFloat(e.target.value));
+    videoRef.current.playbackRate = parseFloat(e.target.value);
     
+
   }
 
-  console.log(volume);
+  //console.log(prevVolume);
 
 
     
@@ -109,9 +161,17 @@ const VideoPlayer = () => {
     <React.Fragment>
       <div className={style.video_container}>
         <div className={style.player} ref={playerRef}>
-          <video className={style.video} ref={videoRef} onEnded={handleOnEnded} onCanPlay={()=>{
+          <video className={style.video} ref={videoRef} onClick={()=>{
+            if(isPlay){
+              videoRef.current.pause();
+            }else{
+              videoRef.current.play();
+            }
+            setIsPlay(!isPlay)
+          }} onEnded={handleOnEnded} onCanPlay={()=>{
             handleUpdateProgressBar();
             setVolume(videoRef.current.volume);
+            prevVolume=videoRef.current.volume;
           }} onTimeUpdate={handleUpdateProgressBar}>
             <source src={v5} type='video/mp4'/>
           </video>
@@ -136,13 +196,13 @@ const VideoPlayer = () => {
                   <div className={style.volume_controls}>
                     <div className={style.volume_icon}  >
                       {
-                        volume >= 0.7  && <span onClick={handleVolumeIcon} id='volume-up'><FaVolumeUp /></span>
+                        volume >= 0.7  && (isMuted ? <span onClick={toggleVolume} id='muted'><FaVolumeMute /></span> : <span onClick={toggleVolume} id='volume-up'><FaVolumeUp /></span>)
                       }
                       {
-                        volume > 0 && volume < 0.7  && <span  onClick={handleVolumeIcon}  id='volume-down' ><FaVolumeDown /></span>
+                        volume > 0 && volume < 0.7  && (isMuted ? <span onClick={toggleVolume} id='muted'><FaVolumeMute /></span>: <span  onClick={toggleVolume}  id='volume-down' ><FaVolumeDown /></span>)
                       }
                       {
-                        volume ===0  && <span  onClick={handleVolumeIcon}  id='volume-off'><FaVolumeOff/></span>
+                        volume === 0  && (isMuted ? <span onClick={toggleVolume} id='muted'><FaVolumeMute /></span>: <span id='volume-off' onClick={toggleVolume}><FaVolumeOff/></span>)
                       }
                     </div>
                     <div className={style.volume_range} title='Change Volume' ref={volumeRangeRef} onClick={handleVolumeProgress}>
@@ -158,12 +218,10 @@ const VideoPlayer = () => {
                 <div className={style.right_controls}>
                   {/* Control Speed */}
                   <div className={style.speed} title='playBack Rate'>
-                    <select name="speed" id="speed">
-                      <option value="0.5x">0.5x</option>
-                      <option value="0.75x">0.75x</option>
-                      <option value="1.0x">1.0x</option>
-                      <option value="1.5x">1.5x</option>
-                      <option value="2.0x">2.0x</option>
+                    <select name="speed" id="speed" onChange={handlePlayBackRate} value={playBackRate}>
+                      <option value={0.5}>0.5x</option>
+                      <option value={1.0}>1.0x</option>
+                      <option value={2.0}>2.0x</option>
                     </select>
                   </div>
                   {/* Time */}

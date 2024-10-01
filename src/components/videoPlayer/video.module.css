@@ -156,6 +156,7 @@
   }
   .full_screen{
     font-size: 25px;
+    cursor: pointer;
   }
 select {
     width: 100%;
