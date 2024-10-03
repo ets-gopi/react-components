@@ -4,3 +4,7 @@
     margin: 0;
     font-family: "Verdana", sans-serif;
 }
+html, body {
+    height: 100%;
+    margin: 0;
+}
