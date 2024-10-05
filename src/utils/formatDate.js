@@ -15,6 +15,19 @@ export const countdownFormat=(date)=>{
   const newDate=new Date(date);
   return `${newDate.getFullYear()}-${String(newDate.getMonth()+1).padStart(2, '0')}-${String(newDate.getDate()).padStart(2, '0')}`
 }
+
+export const countdownDateTimeFormat=(date)=>{
+  if(!(date instanceof Date)){
+    return "Invalid Date"
+  }
+  const newDate=new Date(date);
+  const YYYY=newDate.getFullYear();
+  const MM=String(newDate.getMonth()+1).padStart(2,'0');
+  const DD=String(newDate.getDate()).padStart(2,'0');
+  const hh=String(newDate.getHours()).padStart(2,'0');
+  const mm=String(newDate.getMinutes()).padStart(2,'0');
+  return `${YYYY}-${MM}-${DD}T${hh}:${mm}`
+}
   
   export default format;
   
