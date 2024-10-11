@@ -40,8 +40,6 @@ const Musicplayer = () => {
                     <button className={style.main_button}  title='Play'><FaPlayCircle/></button>
                     <button className={style.button}  title='Next' id='next'><FaForward/></button>
                 </div>
-                
-
             </div>
         </div>
     </React.Fragment>

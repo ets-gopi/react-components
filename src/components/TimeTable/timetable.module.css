@@ -265,7 +265,7 @@
   /* border:1px solid red; */
   flex-basis: 50%;
 }
-input {
+.input_group input {
   width: 100%;
   padding: 12px 20px;
   margin: 8px 0;

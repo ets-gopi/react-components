@@ -45,7 +45,7 @@
     margin: 10px;
 }
 
-input{
+.input_group input{
     width: 95%;
     border-radius: 20px;
     outline: none;
@@ -54,7 +54,7 @@ input{
     padding: 10px;
 }
 
-input[type="submit"] {
+.input_group input[type="submit"] {
     width: 100%;
     height: 40px;
     border: none;
@@ -65,7 +65,7 @@ input[type="submit"] {
     outline: none;
     border-radius: 20px;
 }
-input[type="submit"]:hover{
+.input_group input[type="submit"]:hover{
     filter: brightness(110%);
 }
 
