@@ -69,7 +69,7 @@ const TimeTable = () => {
           </button>
         </div>
         {/* Group container */}
-        <div className={`${style.group_container}`}>
+        {tasks.length > 0 && <div className={`${style.group_container}`}>
           {/* Displaying the tasks */}
           <div className={`${style.display_tasks}`}>
             {tasks?.map((task, ind) => {
@@ -91,14 +91,14 @@ const TimeTable = () => {
             <div className={style.task_heading}>
               {tasks[userSelectId]?.purpose}
             </div>
-            {tasks.length > 0 && (
+            {(
               <CalendarView
                 date={tasks[userSelectId]?.startDate}
                 duration={tasks[userSelectId]?.duration}
               />
             )}
           </div>
-        </div>
+        </div>}
       </div>
       <Modal show={isModal} onHide={handleClose}>
         <Modal.Header closeButton onHide={handleClose}>

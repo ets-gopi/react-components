@@ -1,11 +1,14 @@
+import React from "react";
 import "./App.css";
-import { DatePicker, VideoPlayer, TimeTable,DataGrid ,CountDown,Musicplayer,Bookkeeper} from "./components";
+import { DatePicker, VideoPlayer, TimeTable,DataGrid ,CountDown,Musicplayer,Bookkeeper,Daterangepicker} from "./components";
 function App() {
-  return (
-    // <div className="" style={{ display: 'flex', flexDirection: 'column'}}> 
-    //   <DataGrid />
-    // </div>
-    <Bookkeeper/>
+  return (<React.Fragment>
+    {/* <div style={{width:"600px",position:"relative",border:"1px solid green",height:"500px"}}> 
+      <DataGrid />
+    </div> */}
+    <Musicplayer />
+    
+  </React.Fragment>
   );
 };
 export default App;

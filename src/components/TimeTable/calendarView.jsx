@@ -120,7 +120,7 @@ const CalendarView = ({ date, duration }) => {
           <div className={style.cv_dates_of_month}>
             {dates?.map((date, ind) => {
               return (
-                <DateDisplay key={ind} date={date} userDate={userDate} startDate={userStartDate} endDate={userEndDate} duration={duration}/>
+                <DateDisplay key={ind} date={date} userDate={userDate} startDate={userStartDate} endDate={userEndDate} duration={duration} />
               );
             })}
           </div>

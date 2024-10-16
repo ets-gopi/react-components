@@ -1,4 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react';
+import style from "./datagrid.module.css";
 import styled from 'styled-components';
 const StyleButton=styled.button`
 border:1px solid red;
@@ -32,20 +33,22 @@ const Datagrid = () => {
   },[])
   return (
     <React.Fragment>
-      <div ref={gridRef} style={{width:"100%",height:"100%"}}>
+      <div ref={gridRef}>
         
         {!parentHasDimensions ?(<div style={{ color: 'red' }}>
           Warning: Parent container has no dimensions. The DataGrid may not render properly.
         </div>): <table>
           <thead>
             <tr>
-              {/* <th>Person 1</th>
+              <th>Person 1</th>
               <th>Person 2</th>
-              <th>Person 3</th> */}
+              <th>Person 3</th>
+              <th>Person 3</th>
+              <th>Person 3</th>
             </tr>
           </thead>
           <tbody>
-            {/* <tr>
+            <tr>
               <td>Emil</td>
               <td>Tobias</td>
               <td>Linus</td>
@@ -53,8 +56,8 @@ const Datagrid = () => {
             <tr>
               <td>16</td>
               <td>14</td>
-              <td>10</td>
-            </tr> */}
+              <td><input type="text" value={10} disabled /></td>
+            </tr>
           </tbody>
         </table>}
       </div>

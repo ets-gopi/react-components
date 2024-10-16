@@ -105,9 +105,9 @@
 }
 
 .currentDate {
-  background-color: blue;
-  color: white;
-  position: relative;
+  background-color: blue !important;
+  color: white !important;
+  position: relative !important;
 }
 
 .progressBar {

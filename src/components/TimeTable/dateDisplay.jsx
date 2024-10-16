@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import style from "./timetable.module.css";
 const DateDisplay = ({date,userDate,startDate,endDate}) => {
     const [progress,setProgress]=useState(10);
-    console.log(date,userDate,startDate,endDate);
+    //console.log(date,userDate,startDate,endDate);
     const s_month=new Date(startDate).getMonth();
     const s_date=new Date(startDate).getDate();
     const s_year=new Date(startDate).getFullYear();
@@ -22,13 +22,13 @@ const DateDisplay = ({date,userDate,startDate,endDate}) => {
     const today_year = today.getFullYear();
 
 
-    const isDisabled= (this_month === s_month && date < this_date && this_year===s_year) || (this_month===e_month && date > e_date && this_year === e_year);
+    const isDisabled = (this_month === s_month && date < this_date && date < today_date && this_year===s_year) || (this_month===e_month && date > e_date && this_year === e_year);
 
     // get the startDate and endDate for the user duration
     const start_date=this_month===s_month && date === s_date && this_year===s_year;
     const end_date=this_month===e_month && date === e_date && this_year===e_year;
 
-    const isCurrentDate= date === today_date && this_month === today_month && this_year === today_year;
+    const isCurrentDate = date === today_date && this_month === today_month && this_year === today_year;
     
     // buttonClass
     let buttonClass = style.enabled;
@@ -41,23 +41,12 @@ const DateDisplay = ({date,userDate,startDate,endDate}) => {
     }else if(isCurrentDate){
         buttonClass=style.currentDate;
     }
-    useEffect(()=>{
-        
-    })
+    console.log("isCurrentDate",isCurrentDate);
     
   return (
     <React.Fragment>
-        <button className={buttonClass}
-        disabled={isDisabled}>
+        <button className={buttonClass} disabled={isDisabled}>
             {date}
-            {isCurrentDate && (
-                    <div className={style.progressBar}>
-                        <div
-                            className={style.progress}
-                            style={{ width: `${progress}%` }}
-                        />
-                    </div>
-                )}
         </button>
     </React.Fragment>
   )

@@ -29,5 +29,5 @@ export const countdownDateTimeFormat=(date)=>{
   return `${YYYY}-${MM}-${DD}T${hh}:${mm}`
 }
   
-  export default format;
+export default format;
   
