@@ -4,3 +4,9 @@
     --primary-color:#767676;
     --secondary-color:#000000;
 }
+
+.date_display_container{
+    background-color: #fff;
+    width: 300px;
+    border:1px solid white;
+}

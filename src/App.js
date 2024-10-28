@@ -6,7 +6,7 @@ function App() {
     {/* <div style={{width:"600px",position:"relative",border:"1px solid green",height:"500px"}}> 
       <DataGrid />
     </div> */}
-    <Musicplayer />
+    <Daterangepicker />
     
   </React.Fragment>
   );
