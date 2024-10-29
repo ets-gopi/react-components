@@ -112,7 +112,7 @@ const CountDown = () => {
                             <label htmlFor="title">Title</label>
                             <input type="text" id="title" name="title" placeholder='What are you counting down to ?' value={userSelectInfo.title} onChange={handleUserSelectedInfo}/>
                         </div>
-                        <div>
+                        <div className={style.input_group}>
                             <label htmlFor="date-picker">Select a Date</label>
                             <input type="datetime-local" id="date-picker" name="date-picker" min={countdownDateTimeFormat(new Date())} value={userSelectInfo.date} onChange={handleUserSelectedInfo}/>
                         </div>

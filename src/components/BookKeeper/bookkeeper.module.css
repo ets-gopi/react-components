@@ -1,17 +1,17 @@
 @import url('https://fonts.googleapis.com/css2?family=Karla:ital,wght@0,200..800;1,200..800&display=swap');
 :root{
-    --primary-color:#7c59b0;
+    --py-color:#7c59b0;
     --border-radius:5px
 }
 
 .bookmark_container{
-    background-color: var(--primary-color);
+    background-color: var(--py-color);
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 80' width='80' height='80'%3E%3Cpath fill='%23fcfbfd' fill-opacity='0.4' d='M14 16H9v-2h5V9.87a4 4 0 1 1 2 0V14h5v2h-5v15.95A10 10 0 0 0 23.66 27l-3.46-2 8.2-2.2-2.9 5a12 12 0 0 1-21 0l-2.89-5 8.2 2.2-3.47 2A10 10 0 0 0 14 31.95V16zm40 40h-5v-2h5v-4.13a4 4 0 1 1 2 0V54h5v2h-5v15.95A10 10 0 0 0 63.66 67l-3.47-2 8.2-2.2-2.88 5a12 12 0 0 1-21.02 0l-2.88-5 8.2 2.2-3.47 2A10 10 0 0 0 54 71.95V56zm-39 6a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm40-40a2 2 0 1 1 0-4 2 2 0 0 1 0 4zM15 8a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm40 40a2 2 0 1 0 0-4 2 2 0 0 0 0 4z'%3E%3C/path%3E%3C/svg%3E");
     height: 100vh;
     
 }
 
-h1{
+.bkheading{
     font-family: Karla, sans-serif;
     color:white;
     padding: 20px;
@@ -28,7 +28,7 @@ h1{
     top:5px;
     text-align: center;
 }
-h1:hover{
+.bkheading:hover{
     background: rgba(0, 0,0,0.7);
 }
 
@@ -54,18 +54,18 @@ h1:hover{
     font-size: 20px;
     cursor: pointer;
 }
-a{
+.name a{
     font-family: Karla, sans-serif;
     font-size: 16px;
     font-weight: bold;
     text-transform: uppercase;
 }
-a:link,a:visited{
+.name a:link,.name a:visited{
     text-decoration: none;
     color: white;
 }
 
-a:hover,a:active{
+.name a:hover,.name a:active{
     text-decoration: underline;
 }
 
@@ -106,7 +106,7 @@ a:hover,a:active{
 .modal_header{
     display: flex;
     justify-content: space-between;
-    background-color: var(--primary-color);
+    background-color: var(--py-color);
     color: white;
     padding: 10px;
     font-size: 25px;
@@ -124,7 +124,7 @@ a:hover,a:active{
 }
 .bookmark_form .input_group label{
 display: block;
-color: var(--primary-color);
+color: var(--py-color);
 margin-bottom: 5px;
 }
 .bookmark_form .input_group input{
@@ -137,13 +137,13 @@ margin-bottom: 5px;
 }
 .bookmark_form .input_group input:focus{
    
-    border: 2px solid var(--primary-color);
+    border: 2px solid var(--py-color);
 }
 
 .bookmark_form input[type="submit"]{
     border: none;
     text-transform: uppercase;
-    background-color: var(--primary-color);
+    background-color: var(--py-color);
     color: #fff;
     cursor: pointer;
     outline: none;

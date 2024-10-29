@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-import style from "./style.module.css";
+import style from "./bookkeeper.module.css";
 import { IoCloseSharp } from "react-icons/io5";
 const Modal = ({open,onClose,handleBookmarkList}) => {
   
