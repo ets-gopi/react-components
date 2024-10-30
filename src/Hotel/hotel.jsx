@@ -32,26 +32,8 @@ const Hotel = () => {
         <HotelHeaderWrapper>
           <h2>SheyHotels</h2>
           <div>
-            <Link
-              style={{
-                backgroundColor: "#f44336",
-                boxShadow: "none",
-                marginRight: "5px",
-              }}
-              to="register"
-            >
-              register
-            </Link>
-            <Link
-              style={{
-                backgroundColor: "#006959",
-                boxShadow: "none",
-                marginRight: "5px",
-              }}
-              to="login"
-            >
-              login
-            </Link>
+            <Link id="register-link" className="register-link" to="register">register</Link>
+            <Link id="login-link" className="login-link"to="login">login</Link>
           </div>
         </HotelHeaderWrapper>
         <Outlet />

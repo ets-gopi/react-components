@@ -26,12 +26,11 @@ function App() {
   <React.Fragment>
       <Title>Welcome to the App</Title>
       <ComponentWrapper>
-        <Link to="/videoplayer">VideoPlayer</Link>
-        <Link to="/bookkeeper">BookKeeper</Link>
-        <Link to="/countdown">CountDown</Link>
-        <Link to="/musicplayer">MusicPlayer</Link>
-        <Link to="/hotel-management">HotelManagement</Link>
-
+        <Link to="/videoplayer" id="videoplayer" className="videoplayer">VideoPlayer</Link>
+        <Link to="/bookkeeper" id="bookkeeper"  className="bookkeeper">BookKeeper</Link>
+        <Link to="/countdown" id="countdown"  className="countdown">CountDown</Link>
+        <Link to="/musicplayer" id="musicplayer"  className="musicplayer">MusicPlayer</Link>
+        <Link to="/hotel-management" id="hotel-management"  className="hotel-management">HotelManagement</Link>
       </ComponentWrapper>
   </React.Fragment>
   );
