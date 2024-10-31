@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const defaultUserInfo = {
   isloggedIn: localStorage.getItem("token") ? true : false,
@@ -22,8 +23,11 @@ export const useAuth = () => useContext(AuthContext);
 // create a auth provider component.
 export const AuthProvider = ({ children }) => {
   const [userToken, setUserToken] = useState(defaultUserInfo);
+  const navigate = useNavigate();
   const handleRegister = () => {};
-  const handleLogin = () => {};
+  const handleLogin = () => {
+    navigate("get-started");
+  };
   const handleLogout = () => {};
   return (
     <React.Fragment>

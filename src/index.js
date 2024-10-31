@@ -16,6 +16,7 @@ import App from "./App";
 import Hotel from "./Hotel/hotel";
 import Register from "./Hotel/components/register";
 import Login from "./Hotel/components/login";
+import GetStarted from "./Hotel/components/getStarted";
 // Create the router here
 const router = createBrowserRouter([
   {
@@ -49,6 +50,18 @@ const router = createBrowserRouter([
       {
         path: "login",
         element: <Login />,
+      },
+      {
+        path: "get-started",
+        element: <GetStarted />,
+      },
+      {
+        path: "properties",
+        element: (
+          <>
+            <h2>properties</h2>
+          </>
+        ),
       },
     ],
   },
