@@ -1,30 +1,11 @@
 import React from "react";
 import { Link, Outlet } from "react-router-dom";
-import styled from "styled-components";
-const HotelWrapper = styled.div`
-  background-color: #050f10;
-  min-height: 100vh;
-  color: #b08e54;
-`;
-const HotelHeaderWrapper = styled.header`
-  display: flex;
-  justify-content: space-between;
-  /* border: 1px solid white; */
-  align-items: center;
-  padding: 15px;
-`;
-const Button = styled.button`
-  border: none;
-  padding: 10px 15px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 16px;
-  border-radius: 5px;
-  margin-right: 5px;
-  cursor: pointer;
-  color: aliceblue;
-`;
+import {
+  HotelBodyWrapper,
+  HotelHeaderWrapper,
+  HotelWrapper,
+} from "../utils/styledComponents";
+
 const Hotel = () => {
   return (
     <React.Fragment>
@@ -32,11 +13,17 @@ const Hotel = () => {
         <HotelHeaderWrapper>
           <h2>SheyHotels</h2>
           <div>
-            <Link id="register-link" className="register-link" to="register">register</Link>
-            <Link id="login-link" className="login-link"to="login">login</Link>
+            <Link id="register-link" className="register-link" to="register">
+              register
+            </Link>
+            <Link id="login-link" className="login-link" to="login">
+              login
+            </Link>
           </div>
         </HotelHeaderWrapper>
-        <Outlet />
+        <HotelBodyWrapper>
+          <Outlet />
+        </HotelBodyWrapper>
       </HotelWrapper>
     </React.Fragment>
   );
