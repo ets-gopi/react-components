@@ -8,7 +8,7 @@ import {
 import { AuthProvider, useAuth } from "./context/authContext";
 
 const Hotel = () => {
-  const { userInfo} = useAuth();
+  const { userInfo } = useAuth();
   //console.log(userInfo);
 
   return (
@@ -16,7 +16,9 @@ const Hotel = () => {
       <AuthProvider>
         <HotelWrapper>
           <HotelHeaderWrapper>
-            <h2>SheyHotels</h2>
+            <Link to="/hotel-management/get-started" id="title">
+              SheyHotel
+            </Link>
             {!userInfo.isloggedIn && (
               <div>
                 <Link

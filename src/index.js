@@ -17,6 +17,7 @@ import Hotel from "./Hotel/hotel";
 import Register from "./Hotel/components/register";
 import Login from "./Hotel/components/login";
 import GetStarted from "./Hotel/components/getStarted";
+import Property from "./Hotel/components/property";
 // Create the router here
 const router = createBrowserRouter([
   {
@@ -57,11 +58,7 @@ const router = createBrowserRouter([
       },
       {
         path: "properties",
-        element: (
-          <>
-            <h2>properties</h2>
-          </>
-        ),
+        element: <Property />,
       },
     ],
   },
