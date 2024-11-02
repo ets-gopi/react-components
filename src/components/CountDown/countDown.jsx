@@ -123,7 +123,7 @@ const CountDown = () => {
                 {/* countdown container */}
                 <div className={style.countdown_container} id={style.countdown_container} hidden={isCountdownHidden}>
                     <h2>{userSelectInfo.title}</h2>
-                    <ul>
+                    <ul id={style.duration_left_container}>
                         <li><span>{countdown.days}</span>Days</li>
                         <li><span>{countdown.hours}</span>Hours</li>
                         <li><span>{countdown.minutes}</span>Minutes</li>

@@ -137,9 +137,64 @@ const PropertyCardWrapper = styled.div`
   #content_container {
     // border: 1px solid pink;
     flex-basis: 75%;
+    padding: 10px;
+    #name_container {
+      margin-bottom: 10px;
+      p {
+        font-size: 30px;
+      }
+      label {
+        font-size: 12px;
+        position: relative;
+        top: -9px;
+        left: 5px;
+      }
+    }
+    #description {
+      font-size: 20px;
+      margin-bottom: 10px;
+    }
+    #amenties,
+    #contactInfo {
+      margin-bottom: 10px;
+      p {
+        font-size: 18px;
+      }
+
+      ul {
+        list-style-type: none;
+      }
+      li {
+        display: inline-block;
+        text-align: center;
+        font-size: 16px;
+        margin: 5px;
+      }
+      li::before {
+        content: "";
+        display: inline-block;
+        width: 5px;
+        height: 5px;
+        border: 1px solid #fff;
+        margin-right: 5px;
+        background: #fff;
+      }
+    }
+    #view_rooms {
+      text-align: end;
+      a {
+        border: 1px solid #b08e54;
+      }
+      a:hover {
+        background: #b08e54;
+      }
+    }
   }
   &:hover {
     border: 2px solid #b08e54;
+    //box-shadow: 0 8px 16px 0 #b08e54, 0 6px 20px 0 #b08e54;
+  }
+  @media (max-width: 780px) {
   }
 `;
 export {

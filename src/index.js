@@ -60,6 +60,14 @@ const router = createBrowserRouter([
         path: "properties",
         element: <Property />,
       },
+      {
+        path: "properties/:propertyId/rooms",
+        element: (
+          <>
+            <h2>rooms testing</h2>
+          </>
+        ),
+      },
     ],
   },
 ]);
