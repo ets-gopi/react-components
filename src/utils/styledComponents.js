@@ -35,6 +35,20 @@ const StyledInput = styled.input`
   }
 `;
 
+// const Button = styled.button`
+//   border: none;
+//   padding: 10px 15px;
+//   text-align: center;
+//   text-decoration: none;
+//   display: inline-block;
+//   font-size: 16px;
+//   border-radius: 5px;
+//   margin-right: 5px;
+//   cursor: pointer;
+//   color: aliceblue;
+//   background-color: #b08e54;
+// `;
+
 const Button = styled.button`
   border: none;
   padding: 10px 15px;
@@ -46,6 +60,17 @@ const Button = styled.button`
   margin-right: 5px;
   cursor: pointer;
   color: aliceblue;
+  background-color: #b08e54;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: #a07a46; /* Darker shade on hover */
+  }
+
+  &:disabled {
+    background-color: #ccc; /* Lighter color when disabled */
+    cursor: not-allowed;
+  }
 `;
 
 // register components styles
@@ -116,7 +141,10 @@ const GetStartedWrapper = styled.div`
 const PropertyWrapper = styled.div`
   // border: 1px solid red;
   position: relative;
-  padding: 50px;
+  padding: 60px;
+  // @media (max-width: 1080px) {
+  //   padding: 40px;
+  // }
 `;
 // propertyCard wrapper.
 const PropertyCardWrapper = styled.div`
@@ -124,7 +152,7 @@ const PropertyCardWrapper = styled.div`
   border-radius: 10px;
   position: relative;
   display: flex;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
   #image_container {
     // border: 1px solid green;
     flex-basis: 25%;
@@ -139,6 +167,8 @@ const PropertyCardWrapper = styled.div`
     flex-basis: 75%;
     padding: 10px;
     #name_container {
+      display: flex;
+      justify-content: space-between;
       margin-bottom: 10px;
       p {
         font-size: 30px;
@@ -197,6 +227,75 @@ const PropertyCardWrapper = styled.div`
   @media (max-width: 780px) {
   }
 `;
+
+// search component wrapper.
+const SearchWrapper = styled.div`
+  // border: 1px solid pink;
+  display: flex;
+  flex-wrap: wrap;
+  padding: 20px;
+  background-color: #3b1c32;
+  border-radius: 10px;
+  width: 85%;
+  position: relative;
+  margin: auto;
+
+  div {
+    // border: 2px solid green;
+    flex-basis: 25%;
+    label {
+      display: block;
+      font-size: 14px;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+
+    input {
+      width: 90%;
+      padding: 10px;
+      font-size: 14px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      outline: none;
+    }
+
+    input[type="date"] {
+      cursor: pointer;
+    }
+    input[type="submit"] {
+      cursor: pointer;
+    }
+
+    // input[type="number"] {
+    //   -moz-appearance: textfield;
+    // }
+
+    // input[type="number"]::-webkit-outer-spin-button,
+    // input[type="number"]::-webkit-inner-spin-button {
+    //   -webkit-appearance: none;
+    //   margin: 0;
+    // }
+  }
+  #searchButton {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+`;
+
+const RoomsWrapper = styled.div`
+  border: 1px solid red;
+`;
+
+const RoomCardWrapper = styled.div`
+  border: 2px solid #fff;
+  border-radius: 10px;
+  position: relative;
+  display: flex;
+  width: 85%;
+  margin: auto;
+  margin-bottom: 20px;
+`;
 export {
   StyledInput,
   HotelHeaderWrapper,
@@ -210,4 +309,7 @@ export {
   GetStartedWrapper,
   PropertyWrapper,
   PropertyCardWrapper,
+  SearchWrapper,
+  RoomsWrapper,
+  RoomCardWrapper,
 };

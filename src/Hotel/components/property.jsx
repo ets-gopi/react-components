@@ -1,58 +1,83 @@
 import React from "react";
 import {
+  Button,
   PropertyCardWrapper,
   PropertyWrapper,
 } from "../../utils/styledComponents";
-import { a4_img } from "../../assets";
 import { Link } from "react-router-dom";
+import { useProperty } from "../context/propertyContext";
 const Property = () => {
+  const { propertyInfo } = useProperty();
+  console.log(propertyInfo);
+
   return (
     <React.Fragment>
       <PropertyWrapper>
         {/* <div>Properties</div> */}
-        <PropertyCardWrapper>
-          <div id="image_container">
-            <img src={a4_img} alt="" />
-          </div>
-          <div id="content_container">
-            <div id="name_container">
-              <p>Serenity Hills Hotel</p>
-              <label>321 Tranquil Road,Munnar,Kerala,India,685612.</label>
-            </div>
-            <div id="description">
-              A peaceful retreat surrounded by tea gardens, ideal for relaxation
-              and nature walks.
-            </div>
-            <div id="amenties">
-              <p>Amenties</p>
-              <ul>
-                <li>spa</li>
-                <li>tea garden tours</li>
-                <li>restaurant</li>
-                <li>free wifi</li>
-              </ul>
-            </div>
-            <div id="contactInfo">
-              <p>ContactInfo</p>
-              <ul>
-                <li>09087654321</li>
-                <li>info@serenityhillshotel.com</li>
-                <li>https://serenityhillshotel.com</li>
-              </ul>
-            </div>
-            <div id="view_rooms">
-              <Link to="/hotel-management/properties/:propertyId/rooms">
-                View Rooms
-              </Link>
-            </div>
-          </div>
-        </PropertyCardWrapper>
-        <PropertyCardWrapper>
-          <div id="image_container">
-            <img src={a4_img} alt="" />
-          </div>
-          <div id="content_container"></div>
-        </PropertyCardWrapper>
+        {propertyInfo.propertyList?.map((property, ind) => {
+          return (
+            <PropertyCardWrapper key={property.id}>
+              <div id="image_container">
+                <img src={property.thumbnailImage} alt="" />
+              </div>
+              <div id="content_container">
+                <div id="name_container">
+                  <div>
+                    <p>{property.name}</p>
+                    <label>{`${property.location?.address}, ${property.location?.city}, ${property.location?.state}, ${property.location?.country}, ${property.location?.postalCode}`}</label>
+                  </div>
+                  <div>
+                    <div
+                      style={{
+                        color: `${
+                          property.availabilityStatus ? "green" : "red"
+                        }`,
+                      }}
+                    >
+                      {property.availabilityStatus ? "Active" : "InActive"}
+                    </div>
+                  </div>
+                </div>
+                <div id="description">{property.description}</div>
+                <div id="amenties">
+                  <p>Amenties</p>
+                  <ul>
+                    {property.amenities?.map((am, ind) => {
+                      return <li key={ind}>{am}</li>;
+                    })}
+                  </ul>
+                </div>
+                <div id="contactInfo">
+                  <p>ContactInfo</p>
+                  <ul>
+                    <li>{property.contactInfo.phone}</li>
+                    <li>{property.contactInfo.email}</li>
+                    <li>{property.contactInfo.website}</li>
+                  </ul>
+                </div>
+                <div id="view_rooms">
+                  {property.availabilityStatus ? (
+                    <Link
+                      to={`/hotel-management/properties/${property.id}/rooms`}
+                    >
+                      View Rooms
+                    </Link>
+                  ) : (
+                    <Button
+                      disabled
+                      style={{
+                        background: "#000",
+                        border: "1px solid #b08e54",
+                      }}
+                    >
+                      View Rooms
+                    </Button>
+                  )}
+                </div>
+              </div>
+            </PropertyCardWrapper>
+          );
+        })}
       </PropertyWrapper>
     </React.Fragment>
   );

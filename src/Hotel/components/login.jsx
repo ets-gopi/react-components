@@ -6,11 +6,17 @@ import { useAuth } from "../context/authContext";
 
 const Login = () => {
   const [logindata, setlogindata] = useState(loginData);
-  const {userActions}=useAuth();
-  const handleSubmit = (e) => {
+  const { userActions } = useAuth();
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    userActions.handleLogin();
-    
+
+    for (const obj of logindata) {
+      if (!obj.value) {
+        alert(`${obj.label} is required`);
+        return;
+      }
+    }
+    await userActions.handleLogin(logindata);
   };
   const handleFields = (e) => {
     const { value, id } = e.target;

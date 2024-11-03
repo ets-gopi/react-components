@@ -18,6 +18,11 @@ import Register from "./Hotel/components/register";
 import Login from "./Hotel/components/login";
 import GetStarted from "./Hotel/components/getStarted";
 import Property from "./Hotel/components/property";
+import { AuthProvider } from "./Hotel/context/authContext";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { PropertyProvider } from "./Hotel/context/propertyContext";
+import Rooms from "./Hotel/components/rooms";
 // Create the router here
 const router = createBrowserRouter([
   {
@@ -42,7 +47,11 @@ const router = createBrowserRouter([
   },
   {
     path: "/hotel-management",
-    element: <Hotel />,
+    element: (
+      <AuthProvider>
+        <Hotel />
+      </AuthProvider>
+    ),
     children: [
       {
         path: "register",
@@ -58,13 +67,17 @@ const router = createBrowserRouter([
       },
       {
         path: "properties",
-        element: <Property />,
+        element: (
+          <PropertyProvider>
+            <Property />
+          </PropertyProvider>
+        ),
       },
       {
         path: "properties/:propertyId/rooms",
         element: (
           <>
-            <h2>rooms testing</h2>
+            <Rooms />
           </>
         ),
       },
@@ -76,5 +89,6 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <RouterProvider router={router} />
+    <ToastContainer />
   </React.StrictMode>
 );
