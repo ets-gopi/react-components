@@ -284,17 +284,104 @@ const SearchWrapper = styled.div`
 `;
 
 const RoomsWrapper = styled.div`
-  border: 1px solid red;
+  //border: 1px solid red;
 `;
 
 const RoomCardWrapper = styled.div`
-  border: 2px solid #fff;
+  border: 2px solid #000;
   border-radius: 10px;
   position: relative;
   display: flex;
   width: 85%;
-  margin: auto;
-  margin-bottom: 20px;
+  margin: 20px auto;
+  #image_container {
+    // border: 1px solid green;
+    flex-basis: 25%;
+    img {
+      width: 100%;
+      height: 100%;
+      border-radius: 10px;
+    }
+  }
+  #content_container {
+    // border: 1px solid pink;
+    flex-basis: 75%;
+    padding: 10px;
+    #name_container {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      p {
+        font-size: 30px;
+      }
+      label {
+        font-size: 12px;
+        position: relative;
+        top: -9px;
+        left: 5px;
+      }
+    }
+    #description {
+      font-size: 19px;
+      margin-bottom: 10px;
+    }
+    #roomInfo {
+      // border: 1px solid pink;
+      display: flex;
+      margin-bottom: 5px;
+
+      #amenties {
+        flex-basis: 50%;
+        margin-bottom: 10px;
+        p {
+          font-size: 18px;
+        }
+
+        ul {
+          list-style-type: none;
+        }
+        li {
+          display: inline-block;
+          text-align: center;
+          font-size: 16px;
+          margin: 5px;
+        }
+        li::before {
+          content: "";
+          display: inline-block;
+          width: 5px;
+          height: 5px;
+          border: 1px solid #fff;
+          margin-right: 5px;
+          background: #fff;
+        }
+      }
+      #capacity {
+        flex-basis: 50%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 5px;
+        #max {
+          font-size: 23px;
+        }
+        div span {
+          font-size: 20px;
+        }
+        div h2 {
+          font-size: 30px;
+        }
+      }
+    }
+    #buttons {
+      text-align: end;
+    }
+  }
+  &:hover {
+    border: 2px solid #b08e54;
+    //box-shadow: 0 8px 16px 0 #b08e54, 0 6px 20px 0 #b08e54;
+  }
 `;
 export {
   StyledInput,
