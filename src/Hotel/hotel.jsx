@@ -1,5 +1,5 @@
-import React from "react";
-import { Link, Outlet } from "react-router-dom";
+import React, { useEffect } from "react";
+import { Link, Outlet, useNavigate } from "react-router-dom";
 import {
   HotelBodyWrapper,
   HotelHeaderWrapper,
@@ -7,11 +7,11 @@ import {
   Button,
 } from "../utils/styledComponents";
 import { useAuth } from "./context/authContext";
+import { FaShoppingCart } from "react-icons/fa";
 
 const Hotel = () => {
   const { userInfo, userActions } = useAuth();
   //console.log(userInfo);
-
   return (
     <React.Fragment>
       <HotelWrapper>
@@ -24,13 +24,18 @@ const Hotel = () => {
             <h2>SheyHotel</h2>
           )}
           {userInfo.isloggedIn ? (
-            <Button
-              onClick={() => {
-                userActions.handleLogout();
-              }}
-            >
-              Logout
-            </Button>
+            <div>
+              <Link to={"/"}>
+                <FaShoppingCart />
+              </Link>
+              <Button
+                onClick={() => {
+                  userActions.handleLogout();
+                }}
+              >
+                Logout
+              </Button>
+            </div>
           ) : (
             <div>
               <Link id="register-link" className="register-link" to="register">

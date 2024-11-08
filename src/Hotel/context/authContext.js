@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
@@ -59,6 +59,14 @@ export const AuthProvider = ({ children }) => {
     toast.success("Ok");
     navigate("/hotel-management");
   };
+
+  useEffect(() => {
+    if (userToken.isloggedIn) {
+      navigate("/hotel-management/get-started");
+    } else {
+      navigate("/hotel-management");
+    }
+  }, [userToken.isloggedIn, navigate]);
   return (
     <React.Fragment>
       <AuthContext.Provider

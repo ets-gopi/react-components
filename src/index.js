@@ -23,6 +23,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { PropertyProvider } from "./Hotel/context/propertyContext";
 import Rooms from "./Hotel/components/rooms";
+import { RoomProvider } from "./Hotel/context/roomContext";
 // Create the router here
 const router = createBrowserRouter([
   {
@@ -76,9 +77,9 @@ const router = createBrowserRouter([
       {
         path: "properties/:propertyId/rooms",
         element: (
-          <>
+          <RoomProvider>
             <Rooms />
-          </>
+          </RoomProvider>
         ),
       },
     ],

@@ -24,9 +24,12 @@ export const useRoom = () => useContext(RoomContext);
 export const RoomProvider = ({ children }) => {
   const [roomInfo, setRoomInfo] = useState(defaultRoomInfo);
   const { userInfo } = useAuth();
-  const handleGetRoomList = async () => {
+  const handleGetRoomList = async (roomdetail) => {
+    console.log(roomdetail, "roomdetail");
+
     const response = await axios.post(
-      "http://localhost:5000/v1/api/rooms/property/:propertyId/search-rooms",
+      `http://localhost:5000/v1/api/rooms/property/${roomdetail.propertyId}/search-rooms`,
+      { checkIn: roomdetail.checkIn, checkOut: roomdetail.checkOut },
       {
         headers: {
           Authorization: `Bearer ${userInfo.token}`,
