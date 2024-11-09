@@ -25,7 +25,7 @@ const Hotel = () => {
           )}
           {userInfo.isloggedIn ? (
             <div>
-              <Link to={"/"}>
+              <Link to={"cart-info"}>
                 <FaShoppingCart />
               </Link>
               <Button

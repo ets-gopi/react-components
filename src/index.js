@@ -24,6 +24,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { PropertyProvider } from "./Hotel/context/propertyContext";
 import Rooms from "./Hotel/components/rooms";
 import { RoomProvider } from "./Hotel/context/roomContext";
+import CartInfo from "./Hotel/components/cartInfo";
 // Create the router here
 const router = createBrowserRouter([
   {
@@ -81,6 +82,10 @@ const router = createBrowserRouter([
             <Rooms />
           </RoomProvider>
         ),
+      },
+      {
+        path: "cart-info",
+        element: <CartInfo />,
       },
     ],
   },
