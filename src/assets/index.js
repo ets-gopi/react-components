@@ -11,6 +11,20 @@ import a1_img from "./images/jacinto-1.jpg";
 import a2_img from "./images/jacinto-2.jpg";
 import a3_img from "./images/jacinto-3.jpg";
 import a4_img from "./images/metric-1.jpg";
+import emptyCart from "./images/emptyCart.jpg";
 export {
-    v1,v2,v3,v5,miniclockv6,a1,a2,a3,a4,a1_img,a2_img,a3_img,a4_img
-}
+  v1,
+  v2,
+  v3,
+  v5,
+  miniclockv6,
+  a1,
+  a2,
+  a3,
+  a4,
+  a1_img,
+  a2_img,
+  a3_img,
+  a4_img,
+  emptyCart,
+};

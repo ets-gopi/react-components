@@ -9,13 +9,26 @@ const HotelWrapper = styled.div`
 const HotelHeaderWrapper = styled.header`
   display: flex;
   justify-content: space-between;
-  /* border: 1px solid white; */
+  //border: 1px solid white;
   align-items: center;
   padding: 15px;
   #title {
     font-size: 25px;
     color: #b08e54;
     font-weight: bold;
+  }
+  #cart-info::after {
+    content: attr(data-content);
+    background-color: #b08e54;
+    width: 20px;
+    height: 20px;
+    border: 1px solid #050f10;
+    display: inline-block;
+    position: relative;
+    top: -10px;
+    font-size: 14px;
+    text-align: center;
+    border-radius: 50%;
   }
 `;
 const HotelBodyWrapper = styled.div`
@@ -383,6 +396,90 @@ const RoomCardWrapper = styled.div`
     //box-shadow: 0 8px 16px 0 #b08e54, 0 6px 20px 0 #b08e54;
   }
 `;
+
+const CartInfoWrapper = styled.div`
+  //border: 2px solid green;
+  width: 80%;
+  margin: 10px auto;
+  #emptyCart {
+    width: 70%;
+    margin: auto;
+    img {
+      width: 100%;
+      height: 100%;
+    }
+  }
+`;
+
+const CartInfoCardWrapper = styled.div`
+  //border: 2px solid pink;
+`;
+
+const CartInfoCard = styled.div`
+  border: 0.5px solid #fff;
+  width: 60%;
+  display: flex;
+  margin: 10px auto;
+  #image_container {
+    flex-basis: 30%;
+    img {
+      width: 100%;
+      height: 100%;
+    }
+  }
+  #content_container {
+    flex-basis: 70%;
+    display:flex;
+    flex-direction:column;
+    gap:5px;
+    #name_container {
+      display: flex;
+      justify-content: space-between;
+      p {
+        font-size: 20px;
+      }
+      label {
+        font-size: 12px;
+        position: relative;
+        top: -9px;
+        left: 5px;
+      }
+    }
+    #count_info {
+      display: flex;
+      gap: 50px;
+      div #quantity {
+        margin-top: 5px;
+      }
+    }
+    #price_info {
+      text-align: end;
+    }
+  }
+`;
+
+const QuantityButton = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  width: 100px;
+
+  button {
+    background-color: #050f10;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 5px;
+    color: #b08e54;
+  }
+
+  .value {
+    font-size: 18px;
+    font-weight: bold;
+  }
+`;
 export {
   StyledInput,
   HotelHeaderWrapper,
@@ -399,4 +496,8 @@ export {
   SearchWrapper,
   RoomsWrapper,
   RoomCardWrapper,
+  CartInfoWrapper,
+  CartInfoCardWrapper,
+  CartInfoCard,
+  QuantityButton,
 };

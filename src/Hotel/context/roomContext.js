@@ -61,12 +61,16 @@ export const RoomProvider = ({ children }) => {
     // toast.success("Ok");
     // navigate("/hotel-management");
   };
+
   return (
     <React.Fragment>
       <RoomContext.Provider
         value={{
           roomInfo: roomInfo,
-          roomActions: { handleGetRoomList, handleGetPropertyById },
+          roomActions: {
+            handleGetRoomList,
+            handleGetPropertyById,
+          },
         }}
       >
         {children}

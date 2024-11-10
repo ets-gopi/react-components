@@ -8,6 +8,8 @@ const defaultUserInfo = {
   token: localStorage.getItem("token")
     ? JSON.parse(localStorage.getItem("token"))
     : null,
+  userAddRoomsList: [],
+  count: 0,
 };
 
 // create a auth context.
@@ -17,6 +19,9 @@ const AuthContext = createContext({
     handleRegister: () => {},
     handleLogin: () => {},
     handleLogout: () => {},
+    handleUserSelectedRoom: () => {},
+    handleQuantity: () => {},
+    handleRemoveRoom: () => {},
   },
 });
 
@@ -59,20 +64,64 @@ export const AuthProvider = ({ children }) => {
     toast.success("Ok");
     navigate("/hotel-management");
   };
-
-  useEffect(() => {
-    if (userToken.isloggedIn) {
-      navigate("/hotel-management/get-started");
+  const handleUserSelectedRoom = (selectedRoom) => {
+    //console.log(selectedRoom, "selectedRoom");
+    const isFound = userToken.userAddRoomsList.find(
+      (room, ind) => room.roomId === selectedRoom.roomId
+    );
+    if (!isFound) {
+      setUserToken({
+        ...userToken,
+        userAddRoomsList: [...userToken.userAddRoomsList, selectedRoom],
+        count: userToken.count + 1,
+      });
     } else {
-      navigate("/hotel-management");
+      toast.warn(`${isFound.roomName} is already exist.`);
     }
-  }, [userToken.isloggedIn, navigate]);
+  };
+
+  const handleRemoveRoom = (id) => {
+    const remainingRooms = userToken.userAddRoomsList.filter(
+      (room, ind) => room.roomId !== id
+    );
+    setUserToken({
+      ...userToken,
+      userAddRoomsList: remainingRooms,
+      count: userToken.count - 1,
+    });
+  };
+  const handleQuantity = (txt) => {
+    switch (txt) {
+      case "inc":
+        break;
+      case "dec":
+        break;
+
+      default:
+        break;
+    }
+  };
+
+  // useEffect(() => {
+  //   if (userToken.isloggedIn) {
+  //     navigate("/hotel-management/get-started");
+  //   } else {
+  //     navigate("/hotel-management");
+  //   }
+  // }, [userToken.isloggedIn]);
   return (
     <React.Fragment>
       <AuthContext.Provider
         value={{
           userInfo: userToken,
-          userActions: { handleLogin, handleRegister, handleLogout },
+          userActions: {
+            handleLogin,
+            handleRegister,
+            handleLogout,
+            handleUserSelectedRoom,
+            handleQuantity,
+            handleRemoveRoom,
+          },
         }}
       >
         {children}

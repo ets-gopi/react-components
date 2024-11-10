@@ -5,13 +5,14 @@ import {
   RoomCardWrapper,
   RoomsWrapper,
 } from "../../utils/styledComponents";
-import { a4_img } from "../../assets";
 import { useRoom } from "../context/roomContext";
+import { useAuth } from "../context/authContext";
 const Rooms = () => {
   const {
     roomInfo: { roomList },
   } = useRoom();
-  console.log(roomList);
+  const { userActions } = useAuth();
+  // console.log(roomList,userAddRoomsList);
 
   return (
     <React.Fragment>
@@ -56,12 +57,30 @@ const Rooms = () => {
                       <span>Room price</span>
                       <h2>&#8377;{room.pricePerNight}/N</h2>
                     </div>
-                    <h3>{`Available Rooms : ${room.quantityAvailable}`}</h3>
+                    <h3>{`Available Rooms : ${room.roomsLeft}`}</h3>
                   </div>
                 </div>
                 <div id="buttons">
                   {room.isAvailable ? (
-                    <Button>Add Room</Button>
+                    <Button
+                      onClick={() => {
+                        const obj = {
+                          roomId: room._id,
+                          roomName: room.name,
+                          guestsPerRoom: room.maxOccupancy,
+                          roomPrice: room.pricePerNight,
+                          roomQuantity: 1,
+                          thumbnailImage: room.thumbnailImage,
+                          bedType: room.BedType,
+                          roomType: room.roomType,
+                          beds_count: room.numberOfBeds,
+                          roomsLeft: room.roomsLeft,
+                        };
+                        userActions.handleUserSelectedRoom(obj);
+                      }}
+                    >
+                      Add Room
+                    </Button>
                   ) : (
                     <Button
                       disabled

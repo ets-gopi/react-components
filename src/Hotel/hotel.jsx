@@ -8,10 +8,10 @@ import {
 } from "../utils/styledComponents";
 import { useAuth } from "./context/authContext";
 import { FaShoppingCart } from "react-icons/fa";
+import { useRoom } from "./context/roomContext";
 
 const Hotel = () => {
   const { userInfo, userActions } = useAuth();
-  //console.log(userInfo);
   return (
     <React.Fragment>
       <HotelWrapper>
@@ -25,7 +25,11 @@ const Hotel = () => {
           )}
           {userInfo.isloggedIn ? (
             <div>
-              <Link to={"cart-info"}>
+              <Link
+                to={"cart-info"}
+                id="cart-info"
+                data-content={`${userInfo.count}`}
+              >
                 <FaShoppingCart />
               </Link>
               <Button
