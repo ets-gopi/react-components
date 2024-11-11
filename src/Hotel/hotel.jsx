@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Link, Outlet, useNavigate } from "react-router-dom";
+import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import {
   HotelBodyWrapper,
   HotelHeaderWrapper,
@@ -12,6 +12,13 @@ import { useRoom } from "./context/roomContext";
 
 const Hotel = () => {
   const { userInfo, userActions } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
+  useEffect(() => {
+    if (userInfo.isloggedIn && location.pathname === "/hotel-management") {
+      navigate("/hotel-management/get-started");
+    }
+  }, []);
   return (
     <React.Fragment>
       <HotelWrapper>
