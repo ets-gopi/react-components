@@ -398,7 +398,7 @@ const RoomCardWrapper = styled.div`
 `;
 
 const CartInfoWrapper = styled.div`
-  //border: 2px solid green;
+  border: 2px solid green;
   width: 80%;
   margin: 10px auto;
   #emptyCart {
@@ -412,7 +412,7 @@ const CartInfoWrapper = styled.div`
 `;
 
 const CartInfoCardWrapper = styled.div`
-  //border: 2px solid pink;
+  border: 2px solid pink;
 `;
 
 const CartInfoCard = styled.div`
@@ -429,9 +429,9 @@ const CartInfoCard = styled.div`
   }
   #content_container {
     flex-basis: 70%;
-    display:flex;
-    flex-direction:column;
-    gap:5px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
     #name_container {
       display: flex;
       justify-content: space-between;
@@ -480,6 +480,61 @@ const QuantityButton = styled.div`
     font-weight: bold;
   }
 `;
+
+const BillingInfoWrapper = styled.div`
+  border: 2px solid orange;
+  width: 60%;
+  margin: 10px auto;
+  #title {
+    text-align: center;
+    margin-bottom: 10px;
+  }
+  #userBillingInfo {
+    display: flex;
+    flex-direction: column;
+    width: 80%;
+    margin: 10px auto;
+    #userSearchInfo {
+      border: 2px solid yellow;
+      flex-basis: 50%;
+      .item {
+        display: flex;
+        justify-content: space-between;
+        font-size:18px;
+        margin: 7px 0px;
+      }
+    }
+    #billingDetails {
+      border: 2px solid gainsboro;
+      flex-basis: 50%;
+      .item {
+        display: flex;
+        justify-content: space-between;
+        font-size:18px;
+        margin: 7px 0px;
+        
+      }
+      .couponInfo {
+        margin: 7px 0px;
+        input {
+          width:60%;
+          border: none;
+          text-transform: uppercase;
+          background-color: #fff;
+          color: #000;
+          cursor: pointer;
+          outline: none;
+          border-radius: 5px;
+          padding: 10px 20px;
+        }
+      }
+    }
+  }
+  #book_button {
+    margin-bottom: 10px;
+    text-align: center;
+  }
+`;
 export {
   StyledInput,
   HotelHeaderWrapper,
@@ -500,4 +555,5 @@ export {
   CartInfoCardWrapper,
   CartInfoCard,
   QuantityButton,
+  BillingInfoWrapper,
 };

@@ -22,6 +22,7 @@ const AuthContext = createContext({
     handleUserSelectedRoom: () => {},
     handleQuantity: () => {},
     handleRemoveRoom: () => {},
+    handleSetCountByProperty: () => {},
   },
 });
 
@@ -32,6 +33,7 @@ export const AuthProvider = ({ children }) => {
   const [userToken, setUserToken] = useState(defaultUserInfo);
   const navigate = useNavigate();
   const handleRegister = () => {};
+
   const handleLogin = async (logindata) => {
     const response = await axios.post(
       "http://localhost:5000/v1/api/auth/login",
@@ -54,6 +56,7 @@ export const AuthProvider = ({ children }) => {
       toast.error(message);
     }
   };
+
   const handleLogout = () => {
     localStorage.removeItem("token");
     setUserToken({
@@ -64,6 +67,7 @@ export const AuthProvider = ({ children }) => {
     toast.success("Ok");
     navigate("/hotel-management");
   };
+
   const handleUserSelectedRoom = (selectedRoom) => {
     //console.log(selectedRoom, "selectedRoom");
     const isFound = userToken.userAddRoomsList.find(
@@ -84,17 +88,50 @@ export const AuthProvider = ({ children }) => {
     const remainingRooms = userToken.userAddRoomsList.filter(
       (room, ind) => room.roomId !== id
     );
+    const deleteRoom = userToken.userAddRoomsList.find(
+      (room, ind) => room.roomId === id
+    );
     setUserToken({
       ...userToken,
       userAddRoomsList: remainingRooms,
-      count: userToken.count - 1,
+      count: userToken.count - deleteRoom.roomQuantity,
     });
   };
-  const handleQuantity = (txt) => {
+
+  const handleQuantity = (txt, id) => {
     switch (txt) {
       case "inc":
+        console.log(id, userToken);
+        const incCartRoomsInfo = userToken.userAddRoomsList.map((room, ind) => {
+          if (room.roomId === id && room.roomQuantity < room.roomsLeft) {
+            room.roomQuantity = room.roomQuantity + 1;
+          }
+          return room;
+        });
+        setUserToken({
+          ...userToken,
+          userAddRoomsList: incCartRoomsInfo,
+          count: userToken.count + 1,
+        });
+
         break;
       case "dec":
+        console.log(id, userToken);
+        const decCartRoomsInfo = userToken.userAddRoomsList.map((room, ind) => {
+          if (
+            room.roomId === id &&
+            room.roomQuantity > 1 &&
+            room.roomQuantity <= room.roomsLeft
+          ) {
+            room.roomQuantity = room.roomQuantity - 1;
+          }
+          return room;
+        });
+        setUserToken({
+          ...userToken,
+          userAddRoomsList: decCartRoomsInfo,
+          count: userToken.count - 1,
+        });
         break;
 
       default:
@@ -102,13 +139,13 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // useEffect(() => {
-  //   if (userToken.isloggedIn) {
-  //     navigate("/hotel-management/get-started");
-  //   } else {
-  //     navigate("/hotel-management");
-  //   }
-  // }, [userToken.isloggedIn]);
+  const handleSetCountByProperty = () => {
+    setUserToken({
+      ...userToken,
+      userAddRoomsList: [],
+      count: 0,
+    });
+  };
   return (
     <React.Fragment>
       <AuthContext.Provider
@@ -121,6 +158,7 @@ export const AuthProvider = ({ children }) => {
             handleUserSelectedRoom,
             handleQuantity,
             handleRemoveRoom,
+            handleSetCountByProperty,
           },
         }}
       >

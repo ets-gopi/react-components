@@ -6,8 +6,10 @@ import {
 } from "../../utils/styledComponents";
 import { Link } from "react-router-dom";
 import { useProperty } from "../context/propertyContext";
+import { useAuth } from "../context/authContext";
 const Property = () => {
   const { propertyInfo } = useProperty();
+  const { userActions } = useAuth();
   console.log(propertyInfo);
 
   return (
@@ -59,6 +61,7 @@ const Property = () => {
                   {property.availabilityStatus ? (
                     <Link
                       to={`/hotel-management/properties/${property.id}/rooms`}
+                      onClick={userActions.handleSetCountByProperty}
                     >
                       View Rooms
                     </Link>
