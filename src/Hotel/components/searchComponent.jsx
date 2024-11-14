@@ -24,23 +24,32 @@ const SearchComponent = () => {
     await roomActions.handleGetRoomList({
       checkIn,
       checkOut,
-      totalGuests,
       propertyId,
     });
     localStorage.setItem(
       "userSearchRoomData",
-      JSON.stringify({ checkIn, checkOut, totalGuests })
+      JSON.stringify({ checkIn, checkOut, totalGuests: Number(totalGuests) })
     );
   };
 
   useEffect(() => {
     const fetchRoomsInfo = async () => {
-      const { checkIn, checkOut } = searchData;
+      const { checkIn, checkOut, totalGuests } = searchData;
       await roomActions.handleGetRoomList({
         checkIn,
         checkOut,
         propertyId,
       });
+      if (!localStorage.getItem("userSearchRoomData")) {
+        localStorage.setItem(
+          "userSearchRoomData",
+          JSON.stringify({
+            checkIn,
+            checkOut,
+            totalGuests: Number(totalGuests),
+          })
+        );
+      }
     };
     fetchRoomsInfo();
   }, []);

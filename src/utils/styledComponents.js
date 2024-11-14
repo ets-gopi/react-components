@@ -500,7 +500,7 @@ const BillingInfoWrapper = styled.div`
       .item {
         display: flex;
         justify-content: space-between;
-        font-size:18px;
+        font-size: 18px;
         margin: 7px 0px;
       }
     }
@@ -510,14 +510,13 @@ const BillingInfoWrapper = styled.div`
       .item {
         display: flex;
         justify-content: space-between;
-        font-size:18px;
-        margin: 7px 0px;
-        
+        font-size: 18px;
+        margin: 10px 0px;
       }
       .couponInfo {
-        margin: 7px 0px;
+        margin: 10px 0px;
         input {
-          width:60%;
+          width: 60%;
           border: none;
           text-transform: uppercase;
           background-color: #fff;
@@ -533,6 +532,33 @@ const BillingInfoWrapper = styled.div`
   #book_button {
     margin-bottom: 10px;
     text-align: center;
+  }
+`;
+
+const Loader = styled.div`
+  border: 5px solid #050f10;
+  border-radius: 50%;
+  border-top: 5px solid #b08e54;
+  width: 60px;
+  height: 60px;
+  -webkit-animation: spin 2s linear infinite;
+  animation: spin 2s linear infinite;
+
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+  @-webkit-keyframes spin {
+    0% {
+      -webkit-transform: rotate(0deg);
+    }
+    100% {
+      -webkit-transform: rotate(360deg);
+    }
   }
 `;
 export {
@@ -556,4 +582,5 @@ export {
   CartInfoCard,
   QuantityButton,
   BillingInfoWrapper,
+  Loader,
 };

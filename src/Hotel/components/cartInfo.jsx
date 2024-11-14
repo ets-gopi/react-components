@@ -9,11 +9,13 @@ import {
   QuantityButton,
   Button,
   BillingInfoWrapper,
+  Loader,
 } from "../../utils/styledComponents";
 import { emptyCart } from "../../assets";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import format from "../../utils/formatDate";
+import Modal from "../../components/modal/modal";
 
 const CartInfo = () => {
   const { userInfo, userActions } = useAuth();
@@ -39,20 +41,105 @@ const CartInfo = () => {
       email: "",
     },
   });
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [userSelectedGuests, setUserSelectedGuests] = useState(null);
+  const [isUserConfirmedBooking, setIsUserConfirmedBooking] = useState(false);
   useEffect(() => {
+    let nights = 0;
     if (
       localStorage.getItem("userSearchRoomData") &&
       JSON.parse(localStorage.getItem("userSearchRoomData"))
     ) {
       const data = JSON.parse(localStorage.getItem("userSearchRoomData"));
-      setBookingPayload({
-        ...bookingPayload,
-        checkIn: new Date(data.checkIn),
-        checkOut: new Date(data.checkOut),
-        totalGuests: data.totalGuests,
+      nights = Math.floor(
+        (new Date(data.checkOut) - new Date(data.checkIn)) / 86400000
+      );
+      setBookingPayload((prev) => {
+        return {
+          ...prev,
+          checkIn: data.checkIn,
+          checkOut: data.checkOut,
+          totalGuests: data.totalGuests,
+          nights: nights,
+        };
       });
     }
-  }, []);
+    if (userInfo.userAddRoomsList.length > 0 && userInfo.count > 0) {
+      const { highestRoomPrice, totalRoomsPricePerNight, totalGuestsByUser } =
+        userInfo.userAddRoomsList.reduce(
+          (acc, room) => {
+            if (room.roomPrice > acc.highestRoomPrice) {
+              acc.highestRoomPrice = room.roomPrice;
+            }
+            acc.totalRoomsPricePerNight =
+              acc.totalRoomsPricePerNight + room.roomQuantity * room.roomPrice;
+            acc.totalGuestsByUser =
+              acc.totalGuestsByUser + room.roomQuantity * room.guestsPerRoom;
+            return acc;
+          },
+          {
+            highestRoomPrice: 0,
+            totalRoomsPricePerNight: 0,
+            totalGuestsByUser: 0,
+          }
+        );
+      console.log(
+        "highestRoomPrice",
+        highestRoomPrice,
+        "totalRoomsPricePerNight",
+        totalRoomsPricePerNight,
+        "totalGuestsByUser",
+        totalGuestsByUser
+      );
+      let gstInfo = { rate: 0, amount: 0, cgst: 0, sgst: 0 },
+        totalAmount,
+        payableAmount;
+      if (highestRoomPrice <= 7500) {
+        gstInfo.rate = 12;
+      } else {
+        gstInfo.rate = 18;
+      }
+
+      // calculate the totalAmount
+      totalAmount = totalRoomsPricePerNight * nights;
+      gstInfo.amount = totalAmount * (gstInfo.rate / 100);
+      gstInfo.sgst = gstInfo.amount / 2;
+      gstInfo.cgst = gstInfo.amount / 2;
+
+      payableAmount = totalAmount + gstInfo.amount;
+
+      // modify the user selected rooms info according to backend.
+      const roomsInfo = userInfo.userAddRoomsList.map((room, ind) => {
+        return {
+          roomId: room.roomId,
+          roomName: room.roomName,
+          guestsPerRoom: room.guestsPerRoom,
+          roomPrice: room.roomPrice,
+          roomQuantity: room.roomQuantity,
+        };
+      });
+
+      setUserSelectedGuests((prev) => (prev = totalGuestsByUser));
+
+      setBookingPayload((prev) => {
+        return {
+          ...prev,
+          billingInfo: {
+            totalAmount: totalAmount,
+            gstInfo: gstInfo,
+            payableAmount: payableAmount,
+          },
+          nights: nights,
+          totalRooms: userInfo.count,
+          roomInfo: roomsInfo,
+        };
+      });
+    }
+  }, [userInfo.userAddRoomsList]);
+  //console.log(bookingPayload);
+  const handleModalPopUp = () => {
+    setIsModalOpen(false);
+  };
 
   return (
     <React.Fragment>
@@ -175,29 +262,39 @@ const CartInfo = () => {
                     <div>&#8377;{bookingPayload.billingInfo.totalAmount}</div>
                   </div>
                   <div className="item">
+                    <div>Coupon discount</div>{" "}
+                    <div>
+                      &#8377;
+                      {bookingPayload.billingInfo.discount
+                        ? bookingPayload.billingInfo.discount
+                        : 0}
+                    </div>
+                  </div>
+
+                  <div className="item">
+                    <div>Total Amount</div>{" "}
+                    <div>&#8377;{bookingPayload.billingInfo.totalAmount}</div>
+                  </div>
+                  <div className="item">
                     <div>Taxes & fees </div>
                     <div>
                       &#8377;{bookingPayload.billingInfo.gstInfo.amount}
                     </div>
                   </div>
                   <div className="item">
-                    <div>Coupon discount</div>{" "}
-                    <div>
-                      &#8377;{bookingPayload.billingInfo.gstInfo.amount}
-                    </div>
-                  </div>
-                  <div className="item">
-                    <div>Total Amount:</div>{" "}
-                    <div>&#8377;{bookingPayload.billingInfo.totalAmount}</div>
-                  </div>
-                  <div className="item">
-                    <div>Payable Amount:</div>{" "}
+                    <div>Payable Amount</div>{" "}
                     <div>&#8377;{bookingPayload.billingInfo.payableAmount}</div>
                   </div>
                 </div>
               </div>
               <div id="book_button">
-                <Button>Book Now</Button>
+                <Button
+                  onClick={() => {
+                    setIsModalOpen(true);
+                  }}
+                >
+                  Book Now
+                </Button>
               </div>
             </BillingInfoWrapper>
           </React.Fragment>
@@ -209,6 +306,67 @@ const CartInfo = () => {
           </div>
         )}
       </CartInfoWrapper>
+      <Modal show={isModalOpen}>
+        <Modal.Header closeButton onHide={handleModalPopUp}>
+          <Modal.Title>Selection Alert!</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {isUserConfirmedBooking ? (
+            <React.Fragment>
+              <div>
+                <Loader />
+              </div>
+            </React.Fragment>
+          ) : (
+            userSelectedGuests !== null &&
+            bookingPayload.totalGuests !== 0 && (
+              <React.Fragment>
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "10px",
+                  }}
+                >
+                  <p>
+                    Accommodated{" "}
+                    <strong
+                      style={{
+                        color: `${
+                          userSelectedGuests < bookingPayload.totalGuests
+                            ? "red"
+                            : "green"
+                        }`,
+                      }}
+                    >
+                      {userSelectedGuests}
+                    </strong>{" "}
+                    out of {bookingPayload.totalGuests} Guests
+                  </p>
+                  <p>
+                    Total Rooms Booked{" "}
+                    <strong>{bookingPayload.totalRooms}</strong>
+                  </p>
+                  <p>
+                    Duration <strong>{bookingPayload.nights}</strong> days
+                  </p>
+                  <h3>
+                    PayableAmount{" "}
+                    <strong>{bookingPayload.billingInfo.payableAmount}</strong>
+                  </h3>
+                </div>
+              </React.Fragment>
+            )
+          )}
+        </Modal.Body>
+        <Modal.Footer>
+          <Button disabled={userSelectedGuests < bookingPayload.totalGuests} onClick={()=>{
+            setIsUserConfirmedBooking(true)
+          }}>
+            Confirm Booking
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </React.Fragment>
   );
 };

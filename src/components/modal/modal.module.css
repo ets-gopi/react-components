@@ -33,6 +33,10 @@
 }
 
 .modal_body{
+    height:150px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 
 }
 .modal_footer{
