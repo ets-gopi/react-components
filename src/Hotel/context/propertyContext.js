@@ -26,7 +26,7 @@ export const PropertyProvider = ({ children }) => {
   const { userInfo } = useAuth();
   const handleGetPropertyList = async () => {
     const response = await axios.get(
-      "http://localhost:5000/v1/api/properties/",
+      `${process.env.REACT_APP_API_URL}v1/api/properties/`,
       {
         headers: {
           Authorization: `Bearer ${userInfo.token}`,

@@ -1,6 +1,5 @@
 import axios from "axios";
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useAuth } from "./authContext";
 
@@ -28,7 +27,7 @@ export const RoomProvider = ({ children }) => {
     console.log(roomdetail, "roomdetail");
 
     const response = await axios.post(
-      `http://localhost:5000/v1/api/rooms/property/${roomdetail.propertyId}/search-rooms`,
+      `${process.env.REACT_APP_API_URL}v1/api/rooms/property/${roomdetail.propertyId}/search-rooms`,
       { checkIn: roomdetail.checkIn, checkOut: roomdetail.checkOut },
       {
         headers: {

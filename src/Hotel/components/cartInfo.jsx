@@ -1,4 +1,4 @@
-import React, { useEffect, useReducer, useState } from "react";
+import React, { useEffect, useReducer, useRef, useState } from "react";
 import { IoIosClose } from "react-icons/io";
 import { FaCalendarAlt } from "react-icons/fa";
 import { useAuth } from "../context/authContext";
@@ -44,6 +44,12 @@ const CartInfo = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [userSelectedGuests, setUserSelectedGuests] = useState(null);
   const [isUserConfirmedBooking, setIsUserConfirmedBooking] = useState(false);
+  const [bookingStatus, setBookingStatus] = useState({
+    loading: true,
+    success: false,
+    error: false,
+    message: "",
+  });
   useEffect(() => {
     let nights = 0;
     if (
@@ -132,6 +138,10 @@ const CartInfo = () => {
           nights: nights,
           totalRooms: userInfo.count,
           roomInfo: roomsInfo,
+          customerInfo: {
+            name: userInfo.name,
+            email: userInfo.email,
+          },
         };
       });
     }
@@ -139,6 +149,37 @@ const CartInfo = () => {
   //console.log(bookingPayload);
   const handleModalPopUp = () => {
     setIsModalOpen(false);
+  };
+
+  const handleBookNow = async () => {
+    setIsUserConfirmedBooking(true);
+    const { status, message } = await userActions.handleBookingPayload({
+      ...bookingPayload,
+      totalGuests: userSelectedGuests,
+    });
+    if (status) {
+      setBookingStatus((prev) => {
+        return {
+          ...prev,
+          loading: false,
+          success: true,
+          error: false,
+          message: message,
+        };
+      });
+      toast.success(message);
+    } else {
+      setBookingStatus((prev) => {
+        return {
+          ...prev,
+          loading: false,
+          success: false,
+          error: true,
+          message: message,
+        };
+      });
+      toast.error(message);
+    }
   };
 
   return (
@@ -313,9 +354,13 @@ const CartInfo = () => {
         <Modal.Body>
           {isUserConfirmedBooking ? (
             <React.Fragment>
-              <div>
-                <Loader />
-              </div>
+              {bookingStatus.loading && (
+                <div>
+                  <Loader />
+                </div>
+              )}
+              {bookingStatus.success && <div>success</div>}
+              {bookingStatus.error && <div>failure</div>}
             </React.Fragment>
           ) : (
             userSelectedGuests !== null &&
@@ -360,11 +405,30 @@ const CartInfo = () => {
           )}
         </Modal.Body>
         <Modal.Footer>
-          <Button disabled={userSelectedGuests < bookingPayload.totalGuests} onClick={()=>{
-            setIsUserConfirmedBooking(true)
-          }}>
-            Confirm Booking
-          </Button>
+          {bookingStatus.success && (
+            <Link
+              to="/hotel-management/get-started"
+              style={{ backgroundColor: "green" }}
+            >
+              Continue Booking
+            </Link>
+          )}
+          {bookingStatus.error && (
+            <Link
+              to="/hotel-management/get-started"
+              style={{ backgroundColor: "red" }}
+            >
+              Continue Booking
+            </Link>
+          )}
+          {!isUserConfirmedBooking && (
+            <Button
+              disabled={userSelectedGuests < bookingPayload.totalGuests}
+              onClick={handleBookNow}
+            >
+              Confirm Booking
+            </Button>
+          )}
         </Modal.Footer>
       </Modal>
     </React.Fragment>

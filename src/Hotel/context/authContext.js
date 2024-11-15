@@ -10,6 +10,9 @@ const defaultUserInfo = {
     : null,
   userAddRoomsList: [],
   count: 0,
+  propertyId: null,
+  name: null,
+  email: null,
 };
 
 // create a auth context.
@@ -23,6 +26,7 @@ const AuthContext = createContext({
     handleQuantity: () => {},
     handleRemoveRoom: () => {},
     handleSetCountByProperty: () => {},
+    handleBookingPayload: () => {},
   },
 });
 
@@ -36,7 +40,7 @@ export const AuthProvider = ({ children }) => {
 
   const handleLogin = async (logindata) => {
     const response = await axios.post(
-      "http://localhost:5000/v1/api/auth/login",
+      `${process.env.REACT_APP_API_URL}v1/api/auth/login`,
       { email: logindata[0].value, password: logindata[1].value }
     );
     const {
@@ -139,13 +143,70 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const handleSetCountByProperty = () => {
+  const handleSetCountByProperty = (propertyId) => {
     setUserToken({
       ...userToken,
       userAddRoomsList: [],
       count: 0,
+      propertyId: propertyId,
     });
   };
+
+  const handleBookingPayload = async (bookingPayload) => {
+    console.log(bookingPayload);
+    try {
+      const response = await axios.post(
+        `${process.env.REACT_APP_API_URL}v1/api/bookings/property/${userToken.propertyId}/create-booking/`,
+        { ...bookingPayload },
+        {
+          headers: {
+            Authorization: `Bearer ${userToken.token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const { data } = response;
+      return data;
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
+
+  const handleGetUserDetails = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}v1/api/auth/get-user-info`,
+        {
+          headers: {
+            Authorization: `Bearer ${userToken.token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const {
+        data: { status, message, data },
+      } = response;
+      if (status) {
+        setUserToken((prev) => {
+          return {
+            ...prev,
+            name: data?.username,
+            email: data?.email,
+          };
+        });
+        toast.success(message);
+      } else {
+        toast.error(message);
+      }
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
+  useEffect(() => {
+    if (userToken.isloggedIn && userToken.token) {
+      handleGetUserDetails();
+    }
+  }, []);
   return (
     <React.Fragment>
       <AuthContext.Provider
@@ -159,6 +220,7 @@ export const AuthProvider = ({ children }) => {
             handleQuantity,
             handleRemoveRoom,
             handleSetCountByProperty,
+            handleBookingPayload,
           },
         }}
       >

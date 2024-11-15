@@ -18,7 +18,7 @@ const Property = () => {
         {/* <div>Properties</div> */}
         {propertyInfo.propertyList?.map((property, ind) => {
           return (
-            <PropertyCardWrapper key={property.id}>
+            <PropertyCardWrapper key={property._id}>
               <div id="image_container">
                 <img src={property.thumbnailImage} alt="" />
               </div>
@@ -60,8 +60,10 @@ const Property = () => {
                 <div id="view_rooms">
                   {property.availabilityStatus ? (
                     <Link
-                      to={`/hotel-management/properties/${property.id}/rooms`}
-                      onClick={userActions.handleSetCountByProperty}
+                      to={`/hotel-management/properties/${property._id}/rooms`}
+                      onClick={() => {
+                        userActions.handleSetCountByProperty(property._id);
+                      }}
                     >
                       View Rooms
                     </Link>
