@@ -398,7 +398,7 @@ const RoomCardWrapper = styled.div`
 `;
 
 const CartInfoWrapper = styled.div`
-  border: 2px solid green;
+  /* border: 2px solid green; */
   width: 80%;
   margin: 10px auto;
   #emptyCart {
@@ -412,14 +412,17 @@ const CartInfoWrapper = styled.div`
 `;
 
 const CartInfoCardWrapper = styled.div`
-  border: 2px solid pink;
+  /* border: 2px solid pink; */
 `;
 
 const CartInfoCard = styled.div`
-  border: 0.5px solid #fff;
+  /* border: 0.5px solid #fff; */
+  border: 2px solid #000;
   width: 60%;
   display: flex;
   margin: 10px auto;
+  padding: 1px;
+  border-radius: 5px;
   #image_container {
     flex-basis: 30%;
     img {
@@ -482,7 +485,7 @@ const QuantityButton = styled.div`
 `;
 
 const BillingInfoWrapper = styled.div`
-  border: 2px solid orange;
+  /* border: 2px solid orange; */
   width: 60%;
   margin: 10px auto;
   #title {
@@ -495,7 +498,7 @@ const BillingInfoWrapper = styled.div`
     width: 80%;
     margin: 10px auto;
     #userSearchInfo {
-      border: 2px solid yellow;
+      /* border: 2px solid yellow; */
       flex-basis: 50%;
       .item {
         display: flex;
@@ -505,7 +508,7 @@ const BillingInfoWrapper = styled.div`
       }
     }
     #billingDetails {
-      border: 2px solid gainsboro;
+      /* border: 2px solid gainsboro; */
       flex-basis: 50%;
       .item {
         display: flex;

@@ -348,9 +348,21 @@ const CartInfo = () => {
         )}
       </CartInfoWrapper>
       <Modal show={isModalOpen}>
-        <Modal.Header closeButton onHide={handleModalPopUp}>
-          <Modal.Title>Selection Alert!</Modal.Title>
-        </Modal.Header>
+        {!isUserConfirmedBooking && (
+          <Modal.Header closeButton onHide={handleModalPopUp}>
+            <Modal.Title>Selection Alert!</Modal.Title>
+          </Modal.Header>
+        )}
+        {bookingStatus.loading && isUserConfirmedBooking && (
+          <Modal.Header>
+            <Modal.Title>Booking InProgress...</Modal.Title>
+          </Modal.Header>
+        )}
+        {isUserConfirmedBooking && !bookingStatus.loading && (
+          <Modal.Header>
+            <Modal.Title>CheckOut the Booking Status</Modal.Title>
+          </Modal.Header>
+        )}
         <Modal.Body>
           {isUserConfirmedBooking ? (
             <React.Fragment>
