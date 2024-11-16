@@ -459,6 +459,9 @@ const CartInfoCard = styled.div`
       text-align: end;
     }
   }
+  &:hover{
+    border: 2px solid #b08e54;
+  }
 `;
 
 const QuantityButton = styled.div`
