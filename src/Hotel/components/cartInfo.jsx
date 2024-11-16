@@ -167,6 +167,7 @@ const CartInfo = () => {
           message: message,
         };
       });
+      await userActions.handleSetCountByProperty(null);
       toast.success(message);
     } else {
       setBookingStatus((prev) => {
@@ -371,8 +372,16 @@ const CartInfo = () => {
                   <Loader />
                 </div>
               )}
-              {bookingStatus.success && <div>success</div>}
-              {bookingStatus.error && <div>failure</div>}
+              {bookingStatus.success && (
+                <div>
+                  <p>{bookingStatus.message}</p>
+                </div>
+              )}
+              {bookingStatus.error && (
+                <div>
+                  <p>{bookingStatus.message}</p>
+                </div>
+              )}
             </React.Fragment>
           ) : (
             userSelectedGuests !== null &&

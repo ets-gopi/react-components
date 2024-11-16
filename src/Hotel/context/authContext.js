@@ -78,11 +78,13 @@ export const AuthProvider = ({ children }) => {
       (room, ind) => room.roomId === selectedRoom.roomId
     );
     if (!isFound) {
+
       setUserToken({
         ...userToken,
         userAddRoomsList: [...userToken.userAddRoomsList, selectedRoom],
         count: userToken.count + 1,
       });
+      toast.success(`${selectedRoom.roomName} added to cart.`)
     } else {
       toast.warn(`${isFound.roomName} is already exist.`);
     }
