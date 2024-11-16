@@ -430,6 +430,9 @@ const CartInfo = () => {
             <Link
               to="/hotel-management/get-started"
               style={{ backgroundColor: "green" }}
+              onClick={async () => {
+                await userActions.handleSetCountByProperty(null);
+              }}
             >
               Continue Booking
             </Link>
@@ -438,6 +441,9 @@ const CartInfo = () => {
             <Link
               to="/hotel-management/get-started"
               style={{ backgroundColor: "red" }}
+              onClick={async () => {
+                await userActions.handleSetCountByProperty(null);
+              }}
             >
               Continue Booking
             </Link>
