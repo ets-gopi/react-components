@@ -26,18 +26,8 @@ import Rooms from "./Hotel/components/rooms";
 import { RoomProvider } from "./Hotel/context/roomContext";
 import CartInfo from "./Hotel/components/cartInfo";
 import Checkout from "./Hotel/components/checkout";
-import { loadStripe } from "@stripe/stripe-js";
-import { Elements } from "@stripe/react-stripe-js";
+import CompletePage from "./Hotel/components/completePage";
 
-const stripePromise = loadStripe(
-  "pk_test_51OEt4OSGSp8DnrU8UUYjMkKX9khV5cQ3sAtWkeGsCHIUXD5NhTRwuYjBRr2X1d4pU25pPWA0oTpyyQCY2Eo9NdoJ002d0BETNC"
-);
-
-const appearance = {
-  theme: "stripe",
-};
-// Enable the skeleton loader UI for optimal loading.
-const loader = "auto";
 // Create the router here
 const router = createBrowserRouter([
   {
@@ -102,11 +92,11 @@ const router = createBrowserRouter([
       },
       {
         path: "checkout",
-        element: (
-          <Elements stripe={stripePromise} options={{appearance,loader}}>
-            <Checkout />
-          </Elements>
-        ),
+        element: <Checkout />,
+      },
+      {
+        path: "complete",
+        element: <CompletePage />,
       },
     ],
   },

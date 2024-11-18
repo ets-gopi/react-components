@@ -330,13 +330,7 @@ const CartInfo = () => {
                 </div>
               </div>
               <div id="book_button">
-                <Button
-                  onClick={() => {
-                    setIsModalOpen(true);
-                  }}
-                >
-                  Book Now
-                </Button>
+                <Link to="/hotel-management/checkout">Book Now</Link>
               </div>
             </BillingInfoWrapper>
           </React.Fragment>
