@@ -3,56 +3,40 @@ import { Button, SearchWrapper } from "../../utils/styledComponents";
 import { countdownFormat } from "../../utils/formatDate";
 import { useParams } from "react-router-dom";
 import { useRoom } from "../context/roomContext";
+import { useAuth } from "../context/authContext";
 const SearchComponent = () => {
-  const currentDatePlusOneDay = new Date();
-  currentDatePlusOneDay.setDate(currentDatePlusOneDay.getDate() + 1);
   const { propertyId } = useParams();
   const { roomActions } = useRoom();
-  const [searchData, setSearchData] = useState(
-    localStorage.getItem("userSearchRoomData")
-      ? JSON.parse(localStorage.getItem("userSearchRoomData"))
-      : {
-          checkIn: countdownFormat(new Date()),
-          checkOut: countdownFormat(currentDatePlusOneDay),
-          totalGuests: 2,
-        }
-  );
+  const { userInfo, userActions } = useAuth();
+  const [searchData, setSearchData] = useState(userInfo.userSearchDetails);
   const handleSubmit = async (e) => {
     e.preventDefault();
     const { checkIn, checkOut, totalGuests } = searchData;
-    console.log(checkIn, checkOut, totalGuests, propertyId);
-    await roomActions.handleGetRoomList({
-      checkIn,
-      checkOut,
-      propertyId,
-    });
-    localStorage.setItem(
-      "userSearchRoomData",
-      JSON.stringify({ checkIn, checkOut, totalGuests: Number(totalGuests) })
-    );
-  };
-
-  useEffect(() => {
-    const fetchRoomsInfo = async () => {
-      const { checkIn, checkOut, totalGuests } = searchData;
-      await roomActions.handleGetRoomList({
+    await userActions.handleUserSearchDetails({
+      userSearchDetails: {
         checkIn,
         checkOut,
-        propertyId,
-      });
-      if (!localStorage.getItem("userSearchRoomData")) {
-        localStorage.setItem(
-          "userSearchRoomData",
-          JSON.stringify({
-            checkIn,
-            checkOut,
-            totalGuests: Number(totalGuests),
-          })
-        );
+        totalGuests,
+        propertyId: propertyId,
+      },
+    });
+  };
+  useEffect(() => {
+    setSearchData(userInfo.userSearchDetails);
+  }, [userInfo.userSearchDetails]);
+  useEffect(() => {
+    const fetchRoomsInfo = async () => {
+      if (searchData.checkIn && searchData.checkOut && searchData.propertyId) {
+        const { checkIn, checkOut } = searchData;
+        await roomActions.handleGetRoomList({
+          checkIn,
+          checkOut,
+          propertyId: propertyId,
+        });
       }
     };
     fetchRoomsInfo();
-  }, []);
+  }, [searchData]);
   return (
     <React.Fragment>
       <form onSubmit={handleSubmit}>

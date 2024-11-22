@@ -10,13 +10,14 @@
     justify-content: center;
     align-items: center;
 }
-.modal_dialog{
+.modal_dialog {
     background-color: #fff;
     /* border:1px solid red; */
     width: 60%;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
     border-radius: 10px;
     padding: 10px;
+    color: #000;
 }
 
 .modal_header{

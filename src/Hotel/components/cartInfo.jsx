@@ -37,8 +37,8 @@ const CartInfo = () => {
       },
     },
     customerInfo: {
-      name: "",
-      email: "",
+      name: "def",
+      email: "fffff",
     },
   });
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -53,26 +53,27 @@ const CartInfo = () => {
   useEffect(() => {
     let nights = 0;
     if (
-      localStorage.getItem("userSearchRoomData") &&
-      JSON.parse(localStorage.getItem("userSearchRoomData"))
+      Object.keys(userInfo.guestDetails).length > 0 &&
+      Object.keys(userInfo.userSearchDetails).length > 0
     ) {
-      const data = JSON.parse(localStorage.getItem("userSearchRoomData"));
       nights = Math.floor(
-        (new Date(data.checkOut) - new Date(data.checkIn)) / 86400000
+        (new Date(userInfo.userSearchDetails.checkOut) -
+          new Date(userInfo.userSearchDetails.checkIn)) /
+          86400000
       );
       setBookingPayload((prev) => {
         return {
           ...prev,
-          checkIn: data.checkIn,
-          checkOut: data.checkOut,
-          totalGuests: data.totalGuests,
+          checkIn: userInfo.userSearchDetails.checkIn,
+          checkOut: userInfo.userSearchDetails.checkOut,
+          totalGuests: userInfo.userSearchDetails.totalGuests,
           nights: nights,
         };
       });
     }
-    if (userInfo.userAddRoomsList.length > 0 && userInfo.count > 0) {
+    if (userInfo.cartInfo.length > 0 && userInfo.count > 0) {
       const { highestRoomPrice, totalRoomsPricePerNight, totalGuestsByUser } =
-        userInfo.userAddRoomsList.reduce(
+        userInfo.cartInfo.reduce(
           (acc, room) => {
             if (room.roomPrice > acc.highestRoomPrice) {
               acc.highestRoomPrice = room.roomPrice;
@@ -115,7 +116,7 @@ const CartInfo = () => {
       payableAmount = totalAmount + gstInfo.amount;
 
       // modify the user selected rooms info according to backend.
-      const roomsInfo = userInfo.userAddRoomsList.map((room, ind) => {
+      const roomsInfo = userInfo.cartInfo.map((room, ind) => {
         return {
           roomId: room.roomId,
           roomName: room.roomName,
@@ -138,14 +139,10 @@ const CartInfo = () => {
           nights: nights,
           totalRooms: userInfo.count,
           roomInfo: roomsInfo,
-          customerInfo: {
-            name: userInfo.name,
-            email: userInfo.email,
-          },
         };
       });
     }
-  }, [userInfo.userAddRoomsList]);
+  }, [userInfo.cartInfo, userInfo.userSearchDetails, userInfo.guestDetails]);
   //console.log(bookingPayload);
   const handleModalPopUp = () => {
     setIsModalOpen(false);
@@ -182,14 +179,13 @@ const CartInfo = () => {
       toast.error(message);
     }
   };
-
   return (
     <React.Fragment>
       <CartInfoWrapper>
-        {userInfo.userAddRoomsList.length > 0 ? (
+        {userInfo.cartInfo.length > 0 ? (
           <React.Fragment>
             <CartInfoCardWrapper>
-              {userInfo.userAddRoomsList.map((room, ind) => {
+              {userInfo.cartInfo.map((room, ind) => {
                 return (
                   <CartInfoCard key={ind}>
                     <div id="image_container">
@@ -330,7 +326,13 @@ const CartInfo = () => {
                 </div>
               </div>
               <div id="book_button">
-                <Link to="/hotel-management/checkout">Book Now</Link>
+                <Button
+                  onClick={() => {
+                    setIsModalOpen(true);
+                  }}
+                >
+                  Book Now
+                </Button>
               </div>
             </BillingInfoWrapper>
           </React.Fragment>
@@ -342,10 +344,10 @@ const CartInfo = () => {
           </div>
         )}
       </CartInfoWrapper>
-      <Modal show={isModalOpen}>
+      <Modal show={isModalOpen} >
         {!isUserConfirmedBooking && (
           <Modal.Header closeButton onHide={handleModalPopUp}>
-            <Modal.Title>Selection Alert!</Modal.Title>
+            <Modal.Title>Review Selection</Modal.Title>
           </Modal.Header>
         )}
         {bookingStatus.loading && isUserConfirmedBooking && (
@@ -389,7 +391,8 @@ const CartInfo = () => {
                   }}
                 >
                   <p>
-                    Accommodated{" "}
+                    You had searched for {bookingPayload.totalGuests} Guests.
+                    Your have only selected Rooms to fit
                     <strong
                       style={{
                         color: `${
@@ -399,11 +402,19 @@ const CartInfo = () => {
                         }`,
                       }}
                     >
-                      {userSelectedGuests}
+                      &nbsp;{userSelectedGuests} Guests.
                     </strong>{" "}
-                    out of {bookingPayload.totalGuests} Guests
                   </p>
-                  <p>
+                  <ul style={{marginLeft:"18px"}}>
+                    {userInfo.cartInfo.map((room, ind) => {
+                      return (
+                        <li
+                          key={room.roomId}
+                        >{`${room.roomQuantity} * ${room.roomName} - ${room.roomQuantity * room.guestsPerRoom} Guests.`}</li>
+                      );
+                    })}
+                  </ul>
+                  {/* <p>
                     Total Rooms Booked{" "}
                     <strong>{bookingPayload.totalRooms}</strong>
                   </p>
@@ -413,7 +424,7 @@ const CartInfo = () => {
                   <h3>
                     PayableAmount{" "}
                     <strong>{bookingPayload.billingInfo.payableAmount}</strong>
-                  </h3>
+                  </h3> */}
                 </div>
               </React.Fragment>
             )
