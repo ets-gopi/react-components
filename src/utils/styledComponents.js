@@ -459,7 +459,7 @@ const CartInfoCard = styled.div`
       text-align: end;
     }
   }
-  &:hover{
+  &:hover {
     border: 2px solid #b08e54;
   }
 `;
@@ -567,6 +567,30 @@ const Loader = styled.div`
     }
   }
 `;
+
+const CheckOutWrapper = styled.div`
+  border: 1px solid blue;
+`;
+
+const CheckOutInfo = styled.div`
+  border: 1px solid red;
+  width: 80%;
+  margin: auto;
+  display:flex;
+  justify-content:space-between;
+`;
+
+const BookingInfo = styled.div`
+  border: 1px solid blue;
+  width: 80%;
+  margin: auto;
+`;
+
+const PaymentInfo = styled.div`
+  border: 1px solid green;
+  width: 80%;
+  margin: auto;
+`;
 export {
   StyledInput,
   HotelHeaderWrapper,
@@ -589,4 +613,8 @@ export {
   QuantityButton,
   BillingInfoWrapper,
   Loader,
+  CheckOutWrapper,
+  CheckOutInfo,
+  BookingInfo,
+  PaymentInfo,
 };

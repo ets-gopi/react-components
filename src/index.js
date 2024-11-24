@@ -25,6 +25,7 @@ import { PropertyProvider } from "./Hotel/context/propertyContext";
 import Rooms from "./Hotel/components/rooms";
 import { RoomProvider } from "./Hotel/context/roomContext";
 import CartInfo from "./Hotel/components/cartInfo";
+import CheckOut from "./Hotel/components/CheckOut";
 
 // Create the router here
 const router = createBrowserRouter([
@@ -87,6 +88,10 @@ const router = createBrowserRouter([
       {
         path: "cart-info",
         element: <CartInfo />,
+      },
+      {
+        path: "checkout",
+        element: <CheckOut />,
       },
     ],
   },

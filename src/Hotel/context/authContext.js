@@ -166,12 +166,12 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const handleSetCountByProperty = (propertyId) => {
-    console.log("propertyId", propertyId);
+  const handleSetCountByProperty = (propertyInfo) => {
+    console.log("propertyId", propertyInfo);
     const details = userToken.userSearchDetails;
     console.log(details);
     handleUserSearchDetails({
-      userSearchDetails: { ...details, propertyId: propertyId },
+      userSearchDetails: { ...details, ...propertyInfo },
       count: 0,
       cartInfo: [],
     });

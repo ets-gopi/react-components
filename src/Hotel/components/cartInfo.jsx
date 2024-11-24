@@ -12,13 +12,14 @@ import {
   Loader,
 } from "../../utils/styledComponents";
 import { emptyCart } from "../../assets";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import format from "../../utils/formatDate";
 import Modal from "../../components/modal/modal";
 
 const CartInfo = () => {
   const { userInfo, userActions } = useAuth();
+  const navigate = useNavigate();
   const [bookingPayload, setBookingPayload] = useState({
     checkIn: "",
     checkOut: "",
@@ -37,8 +38,8 @@ const CartInfo = () => {
       },
     },
     customerInfo: {
-      name: "def",
-      email: "fffff",
+      name: "",
+      email: "",
     },
   });
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -68,6 +69,7 @@ const CartInfo = () => {
           checkOut: userInfo.userSearchDetails.checkOut,
           totalGuests: userInfo.userSearchDetails.totalGuests,
           nights: nights,
+          customerInfo: userInfo.guestDetails,
         };
       });
     }
@@ -149,35 +151,36 @@ const CartInfo = () => {
   };
 
   const handleBookNow = async () => {
-    setIsUserConfirmedBooking(true);
-    const { status, message } = await userActions.handleBookingPayload({
-      ...bookingPayload,
-      totalGuests: userSelectedGuests,
-    });
-    if (status) {
-      setBookingStatus((prev) => {
-        return {
-          ...prev,
-          loading: false,
-          success: true,
-          error: false,
-          message: message,
-        };
-      });
-      await userActions.handleSetCountByProperty(null);
-      toast.success(message);
-    } else {
-      setBookingStatus((prev) => {
-        return {
-          ...prev,
-          loading: false,
-          success: false,
-          error: true,
-          message: message,
-        };
-      });
-      toast.error(message);
-    }
+    // setIsUserConfirmedBooking(true);
+    // const { status, message } = await userActions.handleBookingPayload({
+    //   ...bookingPayload,
+    //   totalGuests: userSelectedGuests,
+    // });
+    // if (status) {
+    //   setBookingStatus((prev) => {
+    //     return {
+    //       ...prev,
+    //       loading: false,
+    //       success: true,
+    //       error: false,
+    //       message: message,
+    //     };
+    //   });
+    //   await userActions.handleSetCountByProperty(null);
+    //   toast.success(message);
+    // } else {
+    //   setBookingStatus((prev) => {
+    //     return {
+    //       ...prev,
+    //       loading: false,
+    //       success: false,
+    //       error: true,
+    //       message: message,
+    //     };
+    //   });
+    //   toast.error(message);
+    // }
+    navigate("/hotel-management/checkout");
   };
   return (
     <React.Fragment>
@@ -279,10 +282,14 @@ const CartInfo = () => {
                     <div>Guests</div>
                     <div>{bookingPayload?.totalGuests}</div>
                   </div>
-                  {/* <div className="item">
-                    <div>rooms</div>
-                    <div>{userInfo.count}</div>
-                  </div> */}
+                  <div className="item">
+                    <div>name</div>
+                    <div>{bookingPayload?.customerInfo?.name}</div>
+                  </div>
+                  <div className="item">
+                    <div>email</div>
+                    <div>{bookingPayload?.customerInfo?.email}</div>
+                  </div>
                 </div>
                 <div id="billingDetails">
                   <h3>Billing Details</h3>
@@ -344,13 +351,13 @@ const CartInfo = () => {
           </div>
         )}
       </CartInfoWrapper>
-      <Modal show={isModalOpen} >
-        {!isUserConfirmedBooking && (
+      <Modal show={isModalOpen}>
+        {
           <Modal.Header closeButton onHide={handleModalPopUp}>
             <Modal.Title>Review Selection</Modal.Title>
           </Modal.Header>
-        )}
-        {bookingStatus.loading && isUserConfirmedBooking && (
+        }
+        {/* {bookingStatus.loading && isUserConfirmedBooking && (
           <Modal.Header>
             <Modal.Title>Booking InProgress...</Modal.Title>
           </Modal.Header>
@@ -359,9 +366,9 @@ const CartInfo = () => {
           <Modal.Header>
             <Modal.Title>CheckOut the Booking Status</Modal.Title>
           </Modal.Header>
-        )}
+        )} */}
         <Modal.Body>
-          {isUserConfirmedBooking ? (
+          {/* {isUserConfirmedBooking ? (
             <React.Fragment>
               {bookingStatus.loading && (
                 <div>
@@ -405,16 +412,68 @@ const CartInfo = () => {
                       &nbsp;{userSelectedGuests} Guests.
                     </strong>{" "}
                   </p>
-                  <ul style={{marginLeft:"18px"}}>
+                  <ul style={{ marginLeft: "18px" }}>
                     {userInfo.cartInfo.map((room, ind) => {
                       return (
-                        <li
-                          key={room.roomId}
-                        >{`${room.roomQuantity} * ${room.roomName} - ${room.roomQuantity * room.guestsPerRoom} Guests.`}</li>
+                        <li key={room.roomId}>{`${room.roomQuantity} * ${
+                          room.roomName
+                        } - ${
+                          room.roomQuantity * room.guestsPerRoom
+                        } Guests.`}</li>
                       );
                     })}
                   </ul>
-                  {/* <p>
+                  <p>
+                    Total Rooms Booked{" "}
+                    <strong>{bookingPayload.totalRooms}</strong>
+                  </p>
+                  <p>
+                    Duration <strong>{bookingPayload.nights}</strong> days
+                  </p>
+                  <h3>
+                    PayableAmount{" "}
+                    <strong>{bookingPayload.billingInfo.payableAmount}</strong>
+                  </h3>
+                </div>
+              </React.Fragment>
+            )
+          )} */}
+          {userSelectedGuests !== null && bookingPayload.totalGuests !== 0 && (
+            <React.Fragment>
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "10px",
+                }}
+              >
+                <p>
+                  You had searched for {bookingPayload.totalGuests} Guests. Your
+                  have only selected Rooms to fit
+                  <strong
+                    style={{
+                      color: `${
+                        userSelectedGuests < bookingPayload.totalGuests
+                          ? "red"
+                          : "green"
+                      }`,
+                    }}
+                  >
+                    &nbsp;{userSelectedGuests} Guests.
+                  </strong>{" "}
+                </p>
+                <ul style={{ marginLeft: "18px" }}>
+                  {userInfo.cartInfo.map((room, ind) => {
+                    return (
+                      <li key={room.roomId}>{`${room.roomQuantity} * ${
+                        room.roomName
+                      } - ${
+                        room.roomQuantity * room.guestsPerRoom
+                      } Guests.`}</li>
+                    );
+                  })}
+                </ul>
+                {/* <p>
                     Total Rooms Booked{" "}
                     <strong>{bookingPayload.totalRooms}</strong>
                   </p>
@@ -425,13 +484,12 @@ const CartInfo = () => {
                     PayableAmount{" "}
                     <strong>{bookingPayload.billingInfo.payableAmount}</strong>
                   </h3> */}
-                </div>
-              </React.Fragment>
-            )
+              </div>
+            </React.Fragment>
           )}
         </Modal.Body>
         <Modal.Footer>
-          {bookingStatus.success && (
+          {/* {bookingStatus.success && (
             <Link
               to="/hotel-management/get-started"
               style={{ backgroundColor: "green" }}
@@ -452,15 +510,15 @@ const CartInfo = () => {
             >
               Continue Booking
             </Link>
-          )}
-          {!isUserConfirmedBooking && (
+          )} */}
+          {
             <Button
               disabled={userSelectedGuests < bookingPayload.totalGuests}
               onClick={handleBookNow}
             >
               Confirm Booking
             </Button>
-          )}
+          }
         </Modal.Footer>
       </Modal>
     </React.Fragment>

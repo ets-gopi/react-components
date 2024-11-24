@@ -62,7 +62,12 @@ const Property = () => {
                     <Link
                       to={`/hotel-management/properties/${property._id}/rooms`}
                       onClick={() => {
-                        userActions.handleSetCountByProperty(property._id);
+                        userActions.handleSetCountByProperty({
+                          propertyId: property._id,
+                          propertyName: property.name,
+                          propertyLocation: property.location,
+                          propertyImage: property.thumbnailImage,
+                        });
                       }}
                     >
                       View Rooms
