@@ -45,12 +45,7 @@ const CartInfo = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [userSelectedGuests, setUserSelectedGuests] = useState(null);
   const [isUserConfirmedBooking, setIsUserConfirmedBooking] = useState(false);
-  const [bookingStatus, setBookingStatus] = useState({
-    loading: true,
-    success: false,
-    error: false,
-    message: "",
-  });
+  
   useEffect(() => {
     let nights = 0;
     if (
@@ -180,7 +175,19 @@ const CartInfo = () => {
     //   });
     //   toast.error(message);
     // }
-    navigate("/hotel-management/checkout");
+    console.log("bookingPayload", bookingPayload);
+    const data = {
+      amount: bookingPayload.billingInfo.payableAmount,
+      currency: "INR",
+      checkIn: bookingPayload.checkIn,
+      checkOut: bookingPayload.checkOut,
+      totalRooms: bookingPayload.totalRooms,
+      nights: bookingPayload.nights,
+      roomInfo: bookingPayload.roomInfo,
+      billingInfo: bookingPayload.billingInfo,
+    };
+    const { checkOut } = await userActions.handleCreateOrderId(data);
+    navigate(`/hotel-management/checkout?orderId=${checkOut.orderId}`);
   };
   return (
     <React.Fragment>

@@ -10,14 +10,13 @@ const defaultUserInfo = {
   token: localStorage.getItem("token")
     ? JSON.parse(localStorage.getItem("token"))
     : null,
-  userAddRoomsList: [],
   count: 0,
-  propertyId: null,
-  name: null,
-  email: null,
   cartInfo: [],
   userSearchDetails: {},
   guestDetails: {},
+  checkOut: {},
+  billingInfo: {},
+  isSessionEnd: false,
 };
 
 // create a auth context.
@@ -33,6 +32,9 @@ const AuthContext = createContext({
     handleSetCountByProperty: () => {},
     handleBookingPayload: () => {},
     handleUserSearchDetails: () => {},
+    handleCreateOrderId: () => {},
+    handlUpdateRoomsAfterExpiry: () => {},
+    handleSessionEnd: () => {},
   },
 });
 
@@ -47,7 +49,10 @@ export const AuthProvider = ({ children }) => {
   const handleLogin = async (logindata) => {
     const response = await axios.post(
       `${process.env.REACT_APP_API_URL}v1/api/auth/login`,
-      { email: logindata[0].value, password: logindata[1].value }
+      { email: logindata[0].value, password: logindata[1].value },
+      {
+        withCredentials: true,
+      }
     );
     const {
       data: { status, message, accessToken },
@@ -67,15 +72,34 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    setUserToken({
-      ...userToken,
-      isloggedIn: false,
-      token: null,
-    });
-    toast.success("Ok");
-    navigate("/hotel-management");
+  const handleLogout = async () => {
+    const response = await axios.post(
+      `${process.env.REACT_APP_API_URL}v1/api/auth/logout`,
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${userToken.token}`,
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+      }
+    );
+    const {
+      data: { status, message },
+    } = response;
+    if (status) {
+      localStorage.removeItem("token");
+      setUserToken({
+        ...userToken,
+        isloggedIn: false,
+        token: null,
+      });
+      toast.success(message);
+      navigate("/hotel-management");
+    } else {
+      console.log(status, message);
+      toast.error(message);
+    }
   };
 
   const handleUserSelectedRoom = (selectedRoom) => {
@@ -195,6 +219,7 @@ export const AuthProvider = ({ children }) => {
             Authorization: `Bearer ${userToken.token}`,
             "Content-Type": "application/json",
           },
+          withCredentials: true,
         }
       );
       const { data } = response;
@@ -219,6 +244,7 @@ export const AuthProvider = ({ children }) => {
       const {
         data: { status, message, data },
       } = response;
+
       if (status) {
         setUserToken((prev) => {
           return {
@@ -227,6 +253,8 @@ export const AuthProvider = ({ children }) => {
             guestDetails: data?.guestDetails,
             cartInfo: data?.cartInfo,
             count: data?.count,
+            checkOut: data?.checkOut,
+            billingInfo: data?.billingInfo,
           };
         });
         toast.success(message);
@@ -238,6 +266,8 @@ export const AuthProvider = ({ children }) => {
             guestDetails: data?.guestDetails,
             cartInfo: data?.cartInfo,
             count: data?.count,
+            checkOut: data?.checkOut,
+            billingInfo: data?.billingInfo,
           };
         });
         toast.error(message);
@@ -280,11 +310,80 @@ export const AuthProvider = ({ children }) => {
       toast.error(error.message);
     }
   };
+
+  const handleCreateOrderId = async (orderObj) => {
+    try {
+      const response = await axios.post(
+        `${process.env.REACT_APP_API_URL}v1/api/bookings/property/${userToken.userSearchDetails.propertyId}/create-order-id/`,
+        { ...orderObj },
+        {
+          headers: {
+            Authorization: `Bearer ${userToken.token}`,
+            "Content-Type": "application/json",
+          },
+          withCredentials: true,
+        }
+      );
+      const {
+        data: { status, message, data },
+      } = response;
+      if (status) {
+        toast.success(message);
+        setUserToken((prev) => {
+          return {
+            ...prev,
+            checkOut: data?.checkOut,
+            userSearchDetails: data?.userSearchDetails,
+            billingInfo: data?.billingInfo,
+          };
+        });
+        return data;
+      } else {
+        toast.error(message);
+      }
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
+
+  const handlUpdateRoomsAfterExpiry = async (cartData) => {
+    try {
+      const response = await axios.put(
+        `${process.env.REACT_APP_API_URL}v1/api/bookings/property/${userToken.userSearchDetails.propertyId}/update-rooms-after-expxiry/`,
+        { roomInfo: cartData },
+        {
+          headers: {
+            Authorization: `Bearer ${userToken.token}`,
+            "Content-Type": "application/json",
+          },
+          withCredentials: true,
+        }
+      );
+      const {
+        data: { status, message },
+      } = response;
+      if (status) {
+        toast.success(message);
+      } else {
+        toast.error(message);
+      }
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
+  const handleSessionEnd = () => {
+    setUserToken((prev) => {
+      return {
+        ...prev,
+        isSessionEnd: true,
+      };
+    });
+  };
   useEffect(() => {
     if (userToken.isloggedIn && userToken.token) {
       handleGetUserDetails();
     }
-  }, [userToken.token, userToken.isloggedIn]);
+  }, [userToken.token, userToken.isloggedIn, userToken.isSessionEnd]);
   return (
     <React.Fragment>
       <AuthContext.Provider
@@ -301,6 +400,9 @@ export const AuthProvider = ({ children }) => {
             handleBookingPayload,
             handleUserSearchDetails,
             handleGetUserDetails,
+            handleCreateOrderId,
+            handlUpdateRoomsAfterExpiry,
+            handleSessionEnd
           },
         }}
       >

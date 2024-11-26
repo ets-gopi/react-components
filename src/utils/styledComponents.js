@@ -575,21 +575,125 @@ const CheckOutWrapper = styled.div`
 const CheckOutInfo = styled.div`
   border: 1px solid red;
   width: 80%;
-  margin: auto;
-  display:flex;
-  justify-content:space-between;
+  margin: 10px auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  #item1 {
+    font-size: 25px;
+  }
 `;
 
 const BookingInfo = styled.div`
   border: 1px solid blue;
   width: 80%;
-  margin: auto;
+  margin: 10px auto;
+  #item1 {
+    display: flex;
+    div img {
+      width: 100px;
+      height: 100px;
+    }
+    div.content {
+      label {
+        font-size: 14px;
+      }
+      p {
+        font-size: 20px;
+      }
+    }
+  }
+  #item2 {
+    display: flex;
+    div.icon {
+      width: 100px;
+      height: 100px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 30px;
+    }
+    div.content {
+      display: flex;
+      gap: 10px;
+      div span {
+        font-size: 20px;
+      }
+      div p {
+        font-size: 14px;
+      }
+    }
+  }
+  #item3 {
+    display: flex;
+    div.icon {
+      width: 100px;
+      height: 100px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 30px;
+    }
+  }
+  #item4 {
+    display: flex;
+    div.icon {
+      width: 100px;
+      height: 100px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 30px;
+    }
+    div.content {
+      display: flex;
+      gap: 10px;
+      div span {
+        font-size: 20px;
+      }
+      div p {
+        font-size: 14px;
+      }
+    }
+  }
 `;
 
 const PaymentInfo = styled.div`
   border: 1px solid green;
-  width: 80%;
-  margin: auto;
+  width: 50%;
+  margin: 10px auto;
+  #item1 {
+    display: flex;
+    justify-content: space-between;
+    div {
+      font-size: 20px;
+    }
+    margin-bottom: 10px;
+  }
+  #item2 {
+    display: flex;
+    justify-content: space-between;
+    div {
+      font-size: 20px;
+    }
+    margin-bottom: 10px;
+  }
+  #item3 {
+    display: flex;
+    justify-content: space-between;
+    div {
+      font-size: 20px;
+    }
+    margin-bottom: 10px;
+  }
+  #item4 {
+    display: flex;
+    justify-content: space-between;
+    div {
+      font-size: 20px;
+    }
+    margin-bottom: 10px;
+  }
 `;
 export {
   StyledInput,

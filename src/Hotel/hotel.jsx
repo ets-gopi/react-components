@@ -18,7 +18,7 @@ const Hotel = () => {
     if (userInfo.isloggedIn && location.pathname === "/hotel-management") {
       navigate("/hotel-management/get-started");
     }
-  }, []);
+  }, [location]);
   return (
     <React.Fragment>
       <HotelWrapper>

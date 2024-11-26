@@ -14,6 +14,7 @@ const SearchComponent = () => {
     const { checkIn, checkOut, totalGuests } = searchData;
     await userActions.handleUserSearchDetails({
       userSearchDetails: {
+        ...searchData,
         checkIn,
         checkOut,
         totalGuests,
@@ -21,9 +22,6 @@ const SearchComponent = () => {
       },
     });
   };
-  useEffect(() => {
-    setSearchData(userInfo.userSearchDetails);
-  }, [userInfo.userSearchDetails]);
   useEffect(() => {
     const fetchRoomsInfo = async () => {
       if (searchData.checkIn && searchData.checkOut && searchData.propertyId) {
@@ -37,6 +35,7 @@ const SearchComponent = () => {
     };
     fetchRoomsInfo();
   }, [searchData]);
+  
   return (
     <React.Fragment>
       <form onSubmit={handleSubmit}>
