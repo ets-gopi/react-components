@@ -31,6 +31,7 @@ const CheckOut = () => {
     error: false,
     message: "",
     sessionExpired: false,
+    afterOrderId: false,
   });
   const handlePay = () => {
     var options = {
@@ -42,9 +43,9 @@ const CheckOut = () => {
       image: "https://example.com/your_logo",
       order_id: userInfo.checkOut.orderId,
       handler: async function (response) {
-        alert(response.razorpay_payment_id);
-        alert(response.razorpay_order_id);
-        alert(response.razorpay_signature);
+        // alert(response.razorpay_payment_id);
+        // alert(response.razorpay_order_id);
+        // alert(response.razorpay_signature);
         const data = {
           orderId: userInfo.checkOut.orderId,
           checkIn: checkOutData.userSearchDetails.checkIn,
@@ -86,29 +87,53 @@ const CheckOut = () => {
       theme: {
         color: "#3399cc",
       },
+      retry: {
+        enabled: false,
+      },
     };
     if (isRazorpayLoaded) {
       var rzp1 = new window.Razorpay(options);
 
-      rzp1.on("payment.failed", function (response) {
-        alert(response.error.code);
-        alert(response.error.description);
-        alert(response.error.source);
-        alert(response.error.step);
-        alert(response.error.reason);
-        alert(response.error.metadata.order_id);
-        alert(response.error.metadata.payment_id);
-        setIsModalOpen(true);
-        setBookingStatus((prev) => {
-          return {
-            ...prev,
-            error: true,
-            success: false,
-            loading: false,
-            message:
-              "Oops! Something went wrong with your booking. Please try again or contact customer support for assistance.",
-          };
-        });
+      rzp1.on("payment.failed", async function (response) {
+        // alert(response.error.code);
+        // alert(response.error.description);
+        // alert(response.error.source);
+        // alert(response.error.step);
+        // alert(response.error.reason);
+        // alert(response.error.metadata.order_id);
+        // alert(response.error.metadata.payment_id);
+        const data = {
+          orderId: userInfo.checkOut.orderId,
+          checkIn: checkOutData.userSearchDetails.checkIn,
+          checkOut: checkOutData.userSearchDetails.checkOut,
+          totalGuests: checkOutData.userSearchDetails.totalGuests,
+          totalRooms: checkOutData.userSearchDetails.totalRooms,
+          nights: checkOutData.userSearchDetails.nights,
+          roomInfo: userInfo.cartInfo,
+          billingInfo: {
+            ...checkOutData.billingInfo,
+            paymentStatus: "Failed",
+            razorpayPaymentId: response.error.metadata.payment_id,
+            razorpayOrderId: response.error.metadata.order_id,
+            razorpaySignature: "null",
+          },
+          customerInfo: userInfo.guestDetails,
+        };
+        const result = await userActions.handleForFailedBookingPayload(data);
+        const { status, message } = result;
+        if (status) {
+          setIsModalOpen(true);
+          setBookingStatus((prev) => {
+            return {
+              ...prev,
+              error: true,
+              success: false,
+              loading: false,
+              message:
+                "Oops! Something went wrong with your booking. Please try again or contact customer support for assistance.",
+            };
+          });
+        }
       });
 
       rzp1.open();
@@ -161,6 +186,32 @@ const CheckOut = () => {
         };
       });
     }
+
+    if (
+      Object.keys(userInfo.billingInfo).length === 0 &&
+      Object.keys(userInfo.checkOut).length === 0 &&
+      Object.keys(userInfo.userSearchDetails).length > 0
+    ) {
+      setIsModalOpen(true);
+      setCheckOutData((prev) => {
+        return {
+          ...prev,
+          userSearchDetails: {},
+        };
+      });
+      setBookingStatus((prev) => {
+        return {
+          ...prev,
+          success: false,
+          error: false,
+          loading: false,
+          afterOrderId: true,
+          sessionExpired: false,
+          message:
+            "Oops! Something went wrong with your orderId. Please start the booking process again.",
+        };
+      });
+    }
   }, [userInfo.userSearchDetails, userInfo.checkOut, userInfo.billingInfo]);
   useEffect(() => {
     if (Object.keys(userInfo.checkOut).length > 0) {
@@ -179,6 +230,7 @@ const CheckOut = () => {
         if (difference <= 0) {
           console.log(userInfo.cartInfo);
           userActions.handlUpdateRoomsAfterExpiry(userInfo.cartInfo);
+          userActions.handleSessionEnd();
           setIsModalOpen(true);
           setBookingStatus((prev) => {
             return {
@@ -192,6 +244,7 @@ const CheckOut = () => {
             };
           });
           clearInterval(timer);
+
           setCountdown({ minutes: 0, seconds: 0 });
           return;
         }
@@ -210,7 +263,10 @@ const CheckOut = () => {
         <CheckOutInfo>
           {Object.keys(checkOutData.checkOut).length > 0 ? (
             <React.Fragment>
-              <div id="item1">Pay &#8377;4016 to confirm booking</div>
+              <div id="item1">
+                Pay &#8377;{checkOutData?.billingInfo?.payableAmount || 0} to
+                confirm booking
+              </div>
               <div id="item2">
                 <IoTimeOutline /> TimeLeft:{" "}
                 {`${
@@ -321,11 +377,15 @@ const CheckOut = () => {
           )}
         </PaymentInfo>
       </CheckOutWrapper>
-      <div style={{ textAlign: "center", margin: "10px" }}>
-        <Button id="rzp-button1" onClick={handlePay}>
-          Pay Now
-        </Button>
-      </div>
+      {Object.keys(checkOutData.billingInfo).length !== 0 &&
+        Object.keys(checkOutData.userSearchDetails).length !== 0 &&
+        Object.keys(checkOutData.checkOut).length !== 0 && (
+          <div style={{ textAlign: "center", margin: "10px" }}>
+            <Button id="rzp-button1" onClick={handlePay}>
+              Pay Now
+            </Button>
+          </div>
+        )}
 
       <Modal show={isModalOpen}>
         {bookingStatus.sessionExpired && (
@@ -333,16 +393,23 @@ const CheckOut = () => {
             <Modal.Title>Session TimeOut</Modal.Title>
           </Modal.Header>
         )}
+        {bookingStatus.afterOrderId && (
+          <Modal.Header>
+            <Modal.Title>Something went wrong</Modal.Title>
+          </Modal.Header>
+        )}
         {bookingStatus.loading && (
           <Modal.Header>
             <Modal.Title>Booking InProgress...</Modal.Title>
           </Modal.Header>
         )}
-        {!bookingStatus.loading && !bookingStatus.sessionExpired && (
-          <Modal.Header>
-            <Modal.Title>Booking Creation</Modal.Title>
-          </Modal.Header>
-        )}
+        {!bookingStatus.loading &&
+          !bookingStatus.sessionExpired &&
+          !bookingStatus.afterOrderId && (
+            <Modal.Header>
+              <Modal.Title>Booking Creation</Modal.Title>
+            </Modal.Header>
+          )}
 
         <Modal.Body>
           {bookingStatus.loading && (
@@ -353,20 +420,33 @@ const CheckOut = () => {
           {bookingStatus.success && bookingStatus.message}
           {bookingStatus.error && bookingStatus.message}
           {bookingStatus.sessionExpired && bookingStatus.message}
+          {bookingStatus.afterOrderId && bookingStatus.message}
         </Modal.Body>
         <Modal.Footer>
-          {!bookingStatus.loading && (
-            <Link
-              to="/hotel-management"
-              style={{ background: "green" }}
-              onClick={() => {
-                setIsModalOpen(false);
-                userActions.handleSessionEnd();
-              }}
-            >
-              Continue Booking
-            </Link>
-          )}
+          {!bookingStatus.loading &&
+            (bookingStatus.afterOrderId ? (
+              <Link
+                to="/hotel-management"
+                style={{ background: "green" }}
+                onClick={() => {
+                  setIsModalOpen(false);
+                  userActions.handleSessionEnd();
+                }}
+              >
+                Go to Home
+              </Link>
+            ) : (
+              <Link
+                to="/hotel-management"
+                style={{ background: "green" }}
+                onClick={() => {
+                  setIsModalOpen(false);
+                  userActions.handleSessionEnd();
+                }}
+              >
+                Continue Booking
+              </Link>
+            ))}
         </Modal.Footer>
       </Modal>
     </React.Fragment>

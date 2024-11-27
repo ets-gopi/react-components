@@ -567,6 +567,18 @@ const Loader = styled.div`
     }
   }
 `;
+const LoaderWrapper = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999; /* Ensure it overlays other content */
+`;
 
 const CheckOutWrapper = styled.div`
   border: 1px solid blue;
@@ -716,6 +728,7 @@ export {
   CartInfoCard,
   QuantityButton,
   BillingInfoWrapper,
+  LoaderWrapper,
   Loader,
   CheckOutWrapper,
   CheckOutInfo,

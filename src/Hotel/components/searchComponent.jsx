@@ -24,18 +24,19 @@ const SearchComponent = () => {
   };
   useEffect(() => {
     const fetchRoomsInfo = async () => {
-      if (searchData.checkIn && searchData.checkOut && searchData.propertyId) {
-        const { checkIn, checkOut } = searchData;
+      const { checkIn, checkOut } = userInfo.userSearchDetails;
+      if (checkIn && checkOut) {
         await roomActions.handleGetRoomList({
           checkIn,
           checkOut,
           propertyId: propertyId,
         });
       }
+      setSearchData(userInfo.userSearchDetails);
     };
     fetchRoomsInfo();
-  }, [searchData]);
-  
+  }, [userInfo.userSearchDetails]);
+
   return (
     <React.Fragment>
       <form onSubmit={handleSubmit}>
@@ -46,7 +47,7 @@ const SearchComponent = () => {
               type="date"
               id="checkIn"
               name="checkIn"
-              value={searchData.checkIn}
+              value={searchData.checkIn || ""}
               min={countdownFormat(new Date())}
               onChange={(e) => {
                 setSearchData({
@@ -63,7 +64,7 @@ const SearchComponent = () => {
               type="date"
               id="checkOut"
               name="checkOut"
-              value={searchData.checkOut}
+              value={searchData.checkOut || ""}
               onChange={(e) => {
                 setSearchData({
                   ...searchData,
@@ -80,7 +81,7 @@ const SearchComponent = () => {
               type="number"
               id="totalGuests"
               name="totalGuests"
-              value={searchData.totalGuests}
+              value={searchData.totalGuests || 0}
               onChange={(e) => {
                 setSearchData({
                   ...searchData,

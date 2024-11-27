@@ -45,7 +45,7 @@ const CartInfo = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [userSelectedGuests, setUserSelectedGuests] = useState(null);
   const [isUserConfirmedBooking, setIsUserConfirmedBooking] = useState(false);
-  
+
   useEffect(() => {
     let nights = 0;
     if (
@@ -146,35 +146,6 @@ const CartInfo = () => {
   };
 
   const handleBookNow = async () => {
-    // setIsUserConfirmedBooking(true);
-    // const { status, message } = await userActions.handleBookingPayload({
-    //   ...bookingPayload,
-    //   totalGuests: userSelectedGuests,
-    // });
-    // if (status) {
-    //   setBookingStatus((prev) => {
-    //     return {
-    //       ...prev,
-    //       loading: false,
-    //       success: true,
-    //       error: false,
-    //       message: message,
-    //     };
-    //   });
-    //   await userActions.handleSetCountByProperty(null);
-    //   toast.success(message);
-    // } else {
-    //   setBookingStatus((prev) => {
-    //     return {
-    //       ...prev,
-    //       loading: false,
-    //       success: false,
-    //       error: true,
-    //       message: message,
-    //     };
-    //   });
-    //   toast.error(message);
-    // }
     console.log("bookingPayload", bookingPayload);
     const data = {
       amount: bookingPayload.billingInfo.payableAmount,
@@ -359,92 +330,11 @@ const CartInfo = () => {
         )}
       </CartInfoWrapper>
       <Modal show={isModalOpen}>
-        {
-          <Modal.Header closeButton onHide={handleModalPopUp}>
-            <Modal.Title>Review Selection</Modal.Title>
-          </Modal.Header>
-        }
-        {/* {bookingStatus.loading && isUserConfirmedBooking && (
-          <Modal.Header>
-            <Modal.Title>Booking InProgress...</Modal.Title>
-          </Modal.Header>
-        )}
-        {isUserConfirmedBooking && !bookingStatus.loading && (
-          <Modal.Header>
-            <Modal.Title>CheckOut the Booking Status</Modal.Title>
-          </Modal.Header>
-        )} */}
+        <Modal.Header closeButton onHide={handleModalPopUp}>
+          <Modal.Title>Review Selection</Modal.Title>
+        </Modal.Header>
+
         <Modal.Body>
-          {/* {isUserConfirmedBooking ? (
-            <React.Fragment>
-              {bookingStatus.loading && (
-                <div>
-                  <Loader />
-                </div>
-              )}
-              {bookingStatus.success && (
-                <div>
-                  <p>{bookingStatus.message}</p>
-                </div>
-              )}
-              {bookingStatus.error && (
-                <div>
-                  <p>{bookingStatus.message}</p>
-                </div>
-              )}
-            </React.Fragment>
-          ) : (
-            userSelectedGuests !== null &&
-            bookingPayload.totalGuests !== 0 && (
-              <React.Fragment>
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: "10px",
-                  }}
-                >
-                  <p>
-                    You had searched for {bookingPayload.totalGuests} Guests.
-                    Your have only selected Rooms to fit
-                    <strong
-                      style={{
-                        color: `${
-                          userSelectedGuests < bookingPayload.totalGuests
-                            ? "red"
-                            : "green"
-                        }`,
-                      }}
-                    >
-                      &nbsp;{userSelectedGuests} Guests.
-                    </strong>{" "}
-                  </p>
-                  <ul style={{ marginLeft: "18px" }}>
-                    {userInfo.cartInfo.map((room, ind) => {
-                      return (
-                        <li key={room.roomId}>{`${room.roomQuantity} * ${
-                          room.roomName
-                        } - ${
-                          room.roomQuantity * room.guestsPerRoom
-                        } Guests.`}</li>
-                      );
-                    })}
-                  </ul>
-                  <p>
-                    Total Rooms Booked{" "}
-                    <strong>{bookingPayload.totalRooms}</strong>
-                  </p>
-                  <p>
-                    Duration <strong>{bookingPayload.nights}</strong> days
-                  </p>
-                  <h3>
-                    PayableAmount{" "}
-                    <strong>{bookingPayload.billingInfo.payableAmount}</strong>
-                  </h3>
-                </div>
-              </React.Fragment>
-            )
-          )} */}
           {userSelectedGuests !== null && bookingPayload.totalGuests !== 0 && (
             <React.Fragment>
               <div
@@ -480,44 +370,11 @@ const CartInfo = () => {
                     );
                   })}
                 </ul>
-                {/* <p>
-                    Total Rooms Booked{" "}
-                    <strong>{bookingPayload.totalRooms}</strong>
-                  </p>
-                  <p>
-                    Duration <strong>{bookingPayload.nights}</strong> days
-                  </p>
-                  <h3>
-                    PayableAmount{" "}
-                    <strong>{bookingPayload.billingInfo.payableAmount}</strong>
-                  </h3> */}
               </div>
             </React.Fragment>
           )}
         </Modal.Body>
         <Modal.Footer>
-          {/* {bookingStatus.success && (
-            <Link
-              to="/hotel-management/get-started"
-              style={{ backgroundColor: "green" }}
-              onClick={async () => {
-                await userActions.handleSetCountByProperty(null);
-              }}
-            >
-              Continue Booking
-            </Link>
-          )}
-          {bookingStatus.error && (
-            <Link
-              to="/hotel-management/get-started"
-              style={{ backgroundColor: "red" }}
-              onClick={async () => {
-                await userActions.handleSetCountByProperty(null);
-              }}
-            >
-              Continue Booking
-            </Link>
-          )} */}
           {
             <Button
               disabled={userSelectedGuests < bookingPayload.totalGuests}

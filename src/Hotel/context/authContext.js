@@ -35,6 +35,7 @@ const AuthContext = createContext({
     handleCreateOrderId: () => {},
     handlUpdateRoomsAfterExpiry: () => {},
     handleSessionEnd: () => {},
+    handleForFailedBookingPayload: () => {},
   },
 });
 
@@ -371,6 +372,26 @@ export const AuthProvider = ({ children }) => {
       toast.error(error.message);
     }
   };
+
+  const handleForFailedBookingPayload = async (failedObj) => {
+    try {
+      const response = await axios.post(
+        `${process.env.REACT_APP_API_URL}v1/api/bookings/property/${userToken.userSearchDetails.propertyId}/create-failed-booking/`,
+        { ...failedObj },
+        {
+          headers: {
+            Authorization: `Bearer ${userToken.token}`,
+            "Content-Type": "application/json",
+          },
+          withCredentials: true,
+        }
+      );
+      const { data } = response;
+      return data;
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
   const handleSessionEnd = () => {
     setUserToken((prev) => {
       return {
@@ -379,6 +400,7 @@ export const AuthProvider = ({ children }) => {
       };
     });
   };
+
   useEffect(() => {
     if (userToken.isloggedIn && userToken.token) {
       handleGetUserDetails();
@@ -402,7 +424,8 @@ export const AuthProvider = ({ children }) => {
             handleGetUserDetails,
             handleCreateOrderId,
             handlUpdateRoomsAfterExpiry,
-            handleSessionEnd
+            handleForFailedBookingPayload,
+            handleSessionEnd,
           },
         }}
       >
