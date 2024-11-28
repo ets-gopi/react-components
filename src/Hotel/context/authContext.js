@@ -14,8 +14,6 @@ const defaultUserInfo = {
   cartInfo: [],
   userSearchDetails: {},
   guestDetails: {},
-  checkOut: {},
-  billingInfo: {},
   isSessionEnd: false,
 };
 
@@ -36,6 +34,7 @@ const AuthContext = createContext({
     handlUpdateRoomsAfterExpiry: () => {},
     handleSessionEnd: () => {},
     handleForFailedBookingPayload: () => {},
+    handleUpdateOrderById: () => {},
   },
 });
 
@@ -254,8 +253,6 @@ export const AuthProvider = ({ children }) => {
             guestDetails: data?.guestDetails,
             cartInfo: data?.cartInfo,
             count: data?.count,
-            checkOut: data?.checkOut,
-            billingInfo: data?.billingInfo,
           };
         });
         toast.success(message);
@@ -267,8 +264,6 @@ export const AuthProvider = ({ children }) => {
             guestDetails: data?.guestDetails,
             cartInfo: data?.cartInfo,
             count: data?.count,
-            checkOut: data?.checkOut,
-            billingInfo: data?.billingInfo,
           };
         });
         toast.error(message);
@@ -330,18 +325,31 @@ export const AuthProvider = ({ children }) => {
       } = response;
       if (status) {
         toast.success(message);
-        setUserToken((prev) => {
-          return {
-            ...prev,
-            checkOut: data?.checkOut,
-            userSearchDetails: data?.userSearchDetails,
-            billingInfo: data?.billingInfo,
-          };
-        });
-        return data;
+        return { status, message, data };
       } else {
-        toast.error(message);
+        return { status, message, data };
       }
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
+  const handleUpdateOrderById = async (updateOrderObj) => {
+    console.log(updateOrderObj);
+
+    try {
+      const response = await axios.put(
+        `${process.env.REACT_APP_API_URL}v1/api/orders/update-by-id/${updateOrderObj.orderId}`,
+        { ...updateOrderObj },
+        {
+          headers: {
+            Authorization: `Bearer ${userToken.token}`,
+            "Content-Type": "application/json",
+          },
+          withCredentials: true,
+        }
+      );
+      const { data } = response;
+      return data;
     } catch (error) {
       toast.error(error.message);
     }
@@ -425,6 +433,7 @@ export const AuthProvider = ({ children }) => {
             handleCreateOrderId,
             handlUpdateRoomsAfterExpiry,
             handleForFailedBookingPayload,
+            handleUpdateOrderById,
             handleSessionEnd,
           },
         }}

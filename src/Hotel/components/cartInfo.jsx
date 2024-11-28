@@ -10,6 +10,7 @@ import {
   Button,
   BillingInfoWrapper,
   Loader,
+  LoaderWrapper,
 } from "../../utils/styledComponents";
 import { emptyCart } from "../../assets";
 import { Link, useNavigate } from "react-router-dom";
@@ -44,7 +45,11 @@ const CartInfo = () => {
   });
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [userSelectedGuests, setUserSelectedGuests] = useState(null);
-  const [isUserConfirmedBooking, setIsUserConfirmedBooking] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [isConfirmedOrderRejected, setIsConfirmedOrderRejected] = useState({
+    status: false,
+    message: "",
+  });
 
   useEffect(() => {
     let nights = 0;
@@ -147,18 +152,35 @@ const CartInfo = () => {
 
   const handleBookNow = async () => {
     console.log("bookingPayload", bookingPayload);
+    setIsModalOpen(false);
+    setLoading(true);
+
     const data = {
       amount: bookingPayload.billingInfo.payableAmount,
       currency: "INR",
       checkIn: bookingPayload.checkIn,
       checkOut: bookingPayload.checkOut,
+      totalGuests: bookingPayload.totalGuests,
       totalRooms: bookingPayload.totalRooms,
       nights: bookingPayload.nights,
       roomInfo: bookingPayload.roomInfo,
       billingInfo: bookingPayload.billingInfo,
     };
-    const { checkOut } = await userActions.handleCreateOrderId(data);
-    navigate(`/hotel-management/checkout?orderId=${checkOut.orderId}`);
+    const response = await userActions.handleCreateOrderId(data);
+    if (response.status) {
+      setLoading(false);
+      navigate(`/hotel-management/checkout?orderId=${response.data.orderId}`);
+    } else {
+      setLoading(false);
+      setIsModalOpen(true);
+      setIsConfirmedOrderRejected((prev) => {
+        return {
+          ...prev,
+          status: true,
+          message: response.message,
+        };
+      });
+    }
   };
   return (
     <React.Fragment>
@@ -323,68 +345,96 @@ const CartInfo = () => {
           </React.Fragment>
         ) : (
           <div id="emptyCart">
-            <Link to={"/hotel-management/get-started/"}>
+            <Link to={"/hotel-management"}>
               <img src={emptyCart} alt="emptyCart" />
             </Link>
           </div>
         )}
       </CartInfoWrapper>
       <Modal show={isModalOpen}>
-        <Modal.Header closeButton onHide={handleModalPopUp}>
-          <Modal.Title>Review Selection</Modal.Title>
-        </Modal.Header>
+        {isConfirmedOrderRejected.status ? (
+          <React.Fragment>
+            <Modal.Header closeButton onHide={handleModalPopUp}>
+              <Modal.Title>Order Creation Failed</Modal.Title>
+            </Modal.Header>
+          </React.Fragment>
+        ) : (
+          <Modal.Header closeButton onHide={handleModalPopUp}>
+            <Modal.Title>Review Selection</Modal.Title>
+          </Modal.Header>
+        )}
 
         <Modal.Body>
-          {userSelectedGuests !== null && bookingPayload.totalGuests !== 0 && (
+          {isConfirmedOrderRejected.status ? (
             <React.Fragment>
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: "10px",
-                }}
-              >
-                <p>
-                  You had searched for {bookingPayload.totalGuests} Guests. Your
-                  have only selected Rooms to fit
-                  <strong
-                    style={{
-                      color: `${
-                        userSelectedGuests < bookingPayload.totalGuests
-                          ? "red"
-                          : "green"
-                      }`,
-                    }}
-                  >
-                    &nbsp;{userSelectedGuests} Guests.
-                  </strong>{" "}
-                </p>
-                <ul style={{ marginLeft: "18px" }}>
-                  {userInfo.cartInfo.map((room, ind) => {
-                    return (
-                      <li key={room.roomId}>{`${room.roomQuantity} * ${
-                        room.roomName
-                      } - ${
-                        room.roomQuantity * room.guestsPerRoom
-                      } Guests.`}</li>
-                    );
-                  })}
-                </ul>
-              </div>
+              <p>
+                {isConfirmedOrderRejected.message}
+                There was a conflict while processing your Order. Please try
+                again later.
+              </p>
             </React.Fragment>
+          ) : (
+            userSelectedGuests !== null &&
+            bookingPayload.totalGuests !== 0 && (
+              <React.Fragment>
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "10px",
+                  }}
+                >
+                  <p>
+                    You had searched for {bookingPayload.totalGuests} Guests.
+                    Your have only selected Rooms to fit
+                    <strong
+                      style={{
+                        color: `${
+                          userSelectedGuests < bookingPayload.totalGuests
+                            ? "red"
+                            : "green"
+                        }`,
+                      }}
+                    >
+                      &nbsp;{userSelectedGuests} Guests.
+                    </strong>{" "}
+                  </p>
+                  <ul style={{ marginLeft: "18px" }}>
+                    {userInfo.cartInfo.map((room, ind) => {
+                      return (
+                        <li key={room.roomId}>{`${room.roomQuantity} * ${
+                          room.roomName
+                        } - ${
+                          room.roomQuantity * room.guestsPerRoom
+                        } Guests.`}</li>
+                      );
+                    })}
+                  </ul>
+                </div>
+              </React.Fragment>
+            )
           )}
         </Modal.Body>
         <Modal.Footer>
-          {
+          {isConfirmedOrderRejected.status ? (
+            <React.Fragment>
+              <Link to={"/hotel-management"}>Continue Booking</Link>
+            </React.Fragment>
+          ) : (
             <Button
               disabled={userSelectedGuests < bookingPayload.totalGuests}
               onClick={handleBookNow}
             >
               Confirm Booking
             </Button>
-          }
+          )}
         </Modal.Footer>
       </Modal>
+      {loading && (
+        <LoaderWrapper>
+          <Loader />
+        </LoaderWrapper>
+      )}
     </React.Fragment>
   );
 };

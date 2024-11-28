@@ -64,9 +64,6 @@ const Property = () => {
                       onClick={() => {
                         userActions.handleSetCountByProperty({
                           propertyId: property._id,
-                          propertyName: property.name,
-                          propertyLocation: property.location,
-                          propertyImage: property.thumbnailImage,
                         });
                       }}
                     >

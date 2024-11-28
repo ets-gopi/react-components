@@ -13,16 +13,22 @@ import { FaCalendarAlt } from "react-icons/fa";
 import { IoIosInformationCircleOutline } from "react-icons/io";
 import { useAuth } from "../context/authContext";
 import Modal from "../../components/modal/modal";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
+import axios from "axios";
+import { toast } from "react-toastify";
+import { countdownFormat } from "../../utils/formatDate";
 let timer;
 const CheckOut = () => {
   const { userInfo, userActions } = useAuth();
   const [isRazorpayLoaded, setIsRazorpayLoaded] = useState(false);
   const [countdown, setCountdown] = useState({ minutes: 0, seconds: 0 });
+  let [searchParams] = useSearchParams();
   const [checkOutData, setCheckOutData] = useState({
     checkOut: {},
     billingInfo: {},
     userSearchDetails: {},
+    cartInfo: [],
+    customerInfo: {},
   });
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [bookingStatus, setBookingStatus] = useState({
@@ -41,19 +47,19 @@ const CheckOut = () => {
       name: "Shey Hotels",
       description: "Test Transaction",
       image: "https://example.com/your_logo",
-      order_id: userInfo.checkOut.orderId,
+      order_id: checkOutData.checkOut.orderId,
       handler: async function (response) {
         // alert(response.razorpay_payment_id);
         // alert(response.razorpay_order_id);
         // alert(response.razorpay_signature);
         const data = {
-          orderId: userInfo.checkOut.orderId,
+          orderId: checkOutData.checkOut.orderId,
           checkIn: checkOutData.userSearchDetails.checkIn,
           checkOut: checkOutData.userSearchDetails.checkOut,
           totalGuests: checkOutData.userSearchDetails.totalGuests,
           totalRooms: checkOutData.userSearchDetails.totalRooms,
           nights: checkOutData.userSearchDetails.nights,
-          roomInfo: userInfo.cartInfo,
+          roomInfo: checkOutData.cartInfo,
           billingInfo: {
             ...checkOutData.billingInfo,
             paymentStatus: "Paid",
@@ -61,27 +67,43 @@ const CheckOut = () => {
             razorpayOrderId: response.razorpay_order_id,
             razorpaySignature: response.razorpay_signature,
           },
-          customerInfo: userInfo.guestDetails,
+          customerInfo: checkOutData.customerInfo,
         };
-        const result = await userActions.handleBookingPayload(data);
-        const { status, message } = result;
-        if (status) {
-          setIsModalOpen(true);
-          setBookingStatus((prev) => {
-            return {
-              ...prev,
-              success: true,
-              loading: false,
-              error: false,
-              message:
-                "Your booking has been successfully confirmed! Thank you for choosing Shey Hotels. You will receive a confirmation email shortly with your booking details.",
-            };
-          });
+
+        try {
+          const result = await Promise.all([
+            userActions.handleUpdateOrderById({
+              orderId: checkOutData.checkOut.orderId,
+              orderStatus: "Paid",
+              billingInfo: {
+                ...checkOutData.billingInfo,
+                paymentStatus: "Paid",
+              },
+            }),
+            userActions.handleBookingPayload(data),
+          ]);
+          console.log(result);
+        // if (status) {
+        //   setIsModalOpen(true);
+        //   setBookingStatus((prev) => {
+        //     return {
+        //       ...prev,
+        //       success: true,
+        //       loading: false,
+        //       error: false,
+        //       message:
+        //         "Your booking has been successfully confirmed! Thank you for choosing Shey Hotels. You will receive a confirmation email shortly with your booking details.",
+        //     };
+        //   });
+        // }
+        } catch (error) {
+          console.error("One of the operations failed:", error);
         }
+        
       },
       prefill: {
-        name: userInfo.guestDetails.name,
-        email: userInfo.guestDetails.email,
+        name: checkOutData.customerInfo.name,
+        email: checkOutData.customerInfo.email,
         contact: "+919000090000",
       },
       theme: {
@@ -119,6 +141,11 @@ const CheckOut = () => {
           },
           customerInfo: userInfo.guestDetails,
         };
+        await userActions.handleUpdateOrderById({
+          orderId: checkOutData.checkOut.orderId,
+          orderStatus: "Failed",
+          billingInfo: { ...checkOutData.billingInfo, paymentStatus: "Failed" },
+        });
         const result = await userActions.handleForFailedBookingPayload(data);
         const { status, message } = result;
         if (status) {
@@ -161,62 +188,62 @@ const CheckOut = () => {
     // Check after the component is mounted
     checkRazorpayLoaded();
   }, []);
-  useEffect(() => {
-    if (Object.keys(userInfo.billingInfo).length > 0) {
-      setCheckOutData((prev) => {
-        return {
-          ...prev,
-          billingInfo: userInfo.billingInfo,
-        };
-      });
-    }
-    if (Object.keys(userInfo.userSearchDetails).length > 0) {
-      setCheckOutData((prev) => {
-        return {
-          ...prev,
-          userSearchDetails: userInfo.userSearchDetails,
-        };
-      });
-    }
-    if (Object.keys(userInfo.checkOut).length > 0) {
-      setCheckOutData((prev) => {
-        return {
-          ...prev,
-          checkOut: userInfo.checkOut,
-        };
-      });
-    }
+  // useEffect(() => {
+  //   if (Object.keys(userInfo.billingInfo).length > 0) {
+  //     setCheckOutData((prev) => {
+  //       return {
+  //         ...prev,
+  //         billingInfo: userInfo.billingInfo,
+  //       };
+  //     });
+  //   }
+  //   if (Object.keys(userInfo.userSearchDetails).length > 0) {
+  //     setCheckOutData((prev) => {
+  //       return {
+  //         ...prev,
+  //         userSearchDetails: userInfo.userSearchDetails,
+  //       };
+  //     });
+  //   }
+  //   if (Object.keys(userInfo.checkOut).length > 0) {
+  //     setCheckOutData((prev) => {
+  //       return {
+  //         ...prev,
+  //         checkOut: userInfo.checkOut,
+  //       };
+  //     });
+  //   }
 
-    if (
-      Object.keys(userInfo.billingInfo).length === 0 &&
-      Object.keys(userInfo.checkOut).length === 0 &&
-      Object.keys(userInfo.userSearchDetails).length > 0
-    ) {
-      setIsModalOpen(true);
-      setCheckOutData((prev) => {
-        return {
-          ...prev,
-          userSearchDetails: {},
-        };
-      });
-      setBookingStatus((prev) => {
-        return {
-          ...prev,
-          success: false,
-          error: false,
-          loading: false,
-          afterOrderId: true,
-          sessionExpired: false,
-          message:
-            "Oops! Something went wrong with your orderId. Please start the booking process again.",
-        };
-      });
-    }
-  }, [userInfo.userSearchDetails, userInfo.checkOut, userInfo.billingInfo]);
+  //   if (
+  //     Object.keys(userInfo.billingInfo).length === 0 &&
+  //     Object.keys(userInfo.checkOut).length === 0 &&
+  //     Object.keys(userInfo.userSearchDetails).length > 0
+  //   ) {
+  //     setIsModalOpen(true);
+  //     setCheckOutData((prev) => {
+  //       return {
+  //         ...prev,
+  //         userSearchDetails: {},
+  //       };
+  //     });
+  //     setBookingStatus((prev) => {
+  //       return {
+  //         ...prev,
+  //         success: false,
+  //         error: false,
+  //         loading: false,
+  //         afterOrderId: true,
+  //         sessionExpired: false,
+  //         message:
+  //           "Oops! Something went wrong with your orderId. Please start the booking process again.",
+  //       };
+  //     });
+  //   }
+  // }, [userInfo.userSearchDetails, userInfo.checkOut, userInfo.billingInfo]);
   useEffect(() => {
-    if (Object.keys(userInfo.checkOut).length > 0) {
+    if (Object.keys(checkOutData.checkOut).length > 0) {
       timer = setInterval(() => {
-        const userD = new Date(userInfo.checkOut.expiresAt);
+        const userD = new Date(checkOutData.checkOut.expiresAt);
         const difference =
           new Date(
             userD.getFullYear(),
@@ -228,9 +255,16 @@ const CheckOut = () => {
         //console.log(difference);
 
         if (difference <= 0) {
-          console.log(userInfo.cartInfo);
-          userActions.handlUpdateRoomsAfterExpiry(userInfo.cartInfo);
-          userActions.handleSessionEnd();
+          //console.log(userInfo.cartInfo);
+          userActions.handlUpdateRoomsAfterExpiry(checkOutData.cartInfo);
+          userActions.handleUpdateOrderById({
+            orderId: checkOutData.checkOut.orderId,
+            orderStatus: "expired",
+            billingInfo: {
+              ...checkOutData.billingInfo,
+              paymentStatus: "Failed",
+            },
+          });
           setIsModalOpen(true);
           setBookingStatus((prev) => {
             return {
@@ -244,7 +278,6 @@ const CheckOut = () => {
             };
           });
           clearInterval(timer);
-
           setCountdown({ minutes: 0, seconds: 0 });
           return;
         }
@@ -255,7 +288,49 @@ const CheckOut = () => {
     return () => {
       clearInterval(timer);
     };
-  }, [userInfo.checkOut]);
+  }, [checkOutData.checkOut]);
+  useEffect(() => {
+    const id = searchParams.get("orderId");
+    const fetchOrderDetails = async (id) => {
+      try {
+        const response = await axios.get(
+          `${process.env.REACT_APP_API_URL}v1/api/orders/id?orderId=${id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${userInfo.token}`,
+              "Content-Type": "application/json",
+            },
+            withCredentials: true,
+          }
+        );
+        const { data } = response;
+        if (data.status) {
+          const {
+            checkOut,
+            userSearchDetails,
+            cartInfo,
+            billingInfo,
+            customerInfo,
+          } = data.data;
+          setCheckOutData((prev) => {
+            return {
+              ...prev,
+              checkOut,
+              userSearchDetails,
+              billingInfo,
+              cartInfo,
+              customerInfo,
+            };
+          });
+        } else {
+          toast.error(data.message);
+        }
+      } catch (error) {
+        toast.error(error.message);
+      }
+    };
+    fetchOrderDetails(id);
+  }, [searchParams]);
 
   return (
     <React.Fragment>
@@ -306,11 +381,19 @@ const CheckOut = () => {
                 <div className="content">
                   <div>
                     <span>CheckIn</span>
-                    <p>{checkOutData.userSearchDetails.checkIn}</p>
+                    <p>
+                      {countdownFormat(
+                        new Date(checkOutData.userSearchDetails.checkIn)
+                      )}
+                    </p>
                   </div>
                   <div>
                     <span>CheckIn</span>
-                    <p>{checkOutData.userSearchDetails.checkOut}</p>
+                    <p>
+                      {countdownFormat(
+                        new Date(checkOutData.userSearchDetails.checkOut)
+                      )}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -320,7 +403,7 @@ const CheckOut = () => {
                 </div>
                 <div>
                   <ul style={{ marginLeft: "18px" }}>
-                    {userInfo.cartInfo.map((room, ind) => {
+                    {checkOutData.cartInfo.map((room, ind) => {
                       return (
                         <li key={room.roomId}>{`${room.roomQuantity} * ${
                           room.roomName
@@ -339,11 +422,11 @@ const CheckOut = () => {
                 <div className="content">
                   <div>
                     <span>Name</span>
-                    <p>{userInfo.guestDetails.name}</p>
+                    <p>{checkOutData.customerInfo.name}</p>
                   </div>
                   <div>
                     <span>Email</span>
-                    <p>{userInfo.guestDetails.email}</p>
+                    <p>{checkOutData.customerInfo.email}</p>
                   </div>
                 </div>
               </div>
@@ -430,7 +513,6 @@ const CheckOut = () => {
                 style={{ background: "green" }}
                 onClick={() => {
                   setIsModalOpen(false);
-                  userActions.handleSessionEnd();
                 }}
               >
                 Go to Home
@@ -441,7 +523,6 @@ const CheckOut = () => {
                 style={{ background: "green" }}
                 onClick={() => {
                   setIsModalOpen(false);
-                  userActions.handleSessionEnd();
                 }}
               >
                 Continue Booking
