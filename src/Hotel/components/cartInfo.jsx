@@ -368,7 +368,7 @@ const CartInfo = () => {
           {isConfirmedOrderRejected.status ? (
             <React.Fragment>
               <p>
-                {isConfirmedOrderRejected.message}
+                <strong>{isConfirmedOrderRejected.message}.</strong>
                 There was a conflict while processing your Order. Please try
                 again later.
               </p>
@@ -418,7 +418,7 @@ const CartInfo = () => {
         <Modal.Footer>
           {isConfirmedOrderRejected.status ? (
             <React.Fragment>
-              <Link to={"/hotel-management"}>Continue Booking</Link>
+              <Link to={"/hotel-management"} style={{backgroundColor:"#b08e54"}}>Continue Booking</Link>
             </React.Fragment>
           ) : (
             <Button
