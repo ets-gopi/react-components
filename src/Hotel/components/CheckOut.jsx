@@ -5,6 +5,7 @@ import {
   CheckOutInfo,
   CheckOutWrapper,
   Loader,
+  LoaderWrapper,
   PaymentInfo,
 } from "../../utils/styledComponents";
 import { IoTimeOutline } from "react-icons/io5";
@@ -31,13 +32,13 @@ const CheckOut = () => {
     customerInfo: {},
   });
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [bookingStatus, setBookingStatus] = useState({
-    loading: true,
     success: false,
     error: false,
     message: "",
     sessionExpired: false,
-    afterOrderId: false,
+    notFound: false,
   });
   const handlePay = () => {
     var options = {
@@ -52,6 +53,7 @@ const CheckOut = () => {
         // alert(response.razorpay_payment_id);
         // alert(response.razorpay_order_id);
         // alert(response.razorpay_signature);
+        setLoading((prev) => (prev = true));
         const data = {
           orderId: checkOutData.checkOut.orderId,
           checkIn: checkOutData.userSearchDetails.checkIn,
@@ -71,35 +73,30 @@ const CheckOut = () => {
         };
 
         try {
-          const result = await Promise.all([
-            userActions.handleUpdateOrderById({
-              orderId: checkOutData.checkOut.orderId,
-              orderStatus: "Paid",
-              billingInfo: {
-                ...checkOutData.billingInfo,
-                paymentStatus: "Paid",
-              },
-            }),
-            userActions.handleBookingPayload(data),
-          ]);
-          console.log(result);
-        // if (status) {
-        //   setIsModalOpen(true);
-        //   setBookingStatus((prev) => {
-        //     return {
-        //       ...prev,
-        //       success: true,
-        //       loading: false,
-        //       error: false,
-        //       message:
-        //         "Your booking has been successfully confirmed! Thank you for choosing Shey Hotels. You will receive a confirmation email shortly with your booking details.",
-        //     };
-        //   });
-        // }
+          const { status, message } = await userActions.handleBookingPayload(
+            data,
+            checkOutData.userSearchDetails.propertyId
+          );
+
+          if (status) {
+            setIsModalOpen(true);
+            setBookingStatus((prev) => {
+              return {
+                ...prev,
+                success: true,
+                message:
+                  "Your booking has been successfully confirmed! Thank you for choosing Shey Hotels. You will receive a confirmation email shortly with your booking details.",
+              };
+            });
+          } else {
+            toast.error(message);
+          }
         } catch (error) {
+          toast.error(error.message);
           console.error("One of the operations failed:", error);
+        } finally {
+          setLoading((prev) => (prev = false));
         }
-        
       },
       prefill: {
         name: checkOutData.customerInfo.name,
@@ -124,14 +121,15 @@ const CheckOut = () => {
         // alert(response.error.reason);
         // alert(response.error.metadata.order_id);
         // alert(response.error.metadata.payment_id);
+        setLoading((prev) => (prev = true));
         const data = {
-          orderId: userInfo.checkOut.orderId,
+          orderId: checkOutData.checkOut.orderId,
           checkIn: checkOutData.userSearchDetails.checkIn,
           checkOut: checkOutData.userSearchDetails.checkOut,
           totalGuests: checkOutData.userSearchDetails.totalGuests,
           totalRooms: checkOutData.userSearchDetails.totalRooms,
           nights: checkOutData.userSearchDetails.nights,
-          roomInfo: userInfo.cartInfo,
+          roomInfo: checkOutData.cartInfo,
           billingInfo: {
             ...checkOutData.billingInfo,
             paymentStatus: "Failed",
@@ -139,27 +137,50 @@ const CheckOut = () => {
             razorpayOrderId: response.error.metadata.order_id,
             razorpaySignature: "null",
           },
-          customerInfo: userInfo.guestDetails,
+          customerInfo: checkOutData.customerInfo,
         };
-        await userActions.handleUpdateOrderById({
-          orderId: checkOutData.checkOut.orderId,
-          orderStatus: "Failed",
-          billingInfo: { ...checkOutData.billingInfo, paymentStatus: "Failed" },
-        });
-        const result = await userActions.handleForFailedBookingPayload(data);
-        const { status, message } = result;
-        if (status) {
-          setIsModalOpen(true);
-          setBookingStatus((prev) => {
-            return {
-              ...prev,
-              error: true,
-              success: false,
-              loading: false,
-              message:
-                "Oops! Something went wrong with your booking. Please try again or contact customer support for assistance.",
-            };
-          });
+
+        // const data = {
+        //   orderId: userInfo.checkOut.orderId,
+        //   checkIn: checkOutData.userSearchDetails.checkIn,
+        //   checkOut: checkOutData.userSearchDetails.checkOut,
+        //   totalGuests: checkOutData.userSearchDetails.totalGuests,
+        //   totalRooms: checkOutData.userSearchDetails.totalRooms,
+        //   nights: checkOutData.userSearchDetails.nights,
+        //   roomInfo: userInfo.cartInfo,
+        //   billingInfo: {
+        //     ...checkOutData.billingInfo,
+        //     paymentStatus: "Failed",
+        //     razorpayPaymentId: response.error.metadata.payment_id,
+        //     razorpayOrderId: response.error.metadata.order_id,
+        //     razorpaySignature: "null",
+        //   },
+        //   customerInfo: userInfo.guestDetails,
+        // };
+        try {
+          const result = await userActions.handleForFailedBookingPayload(
+            data,
+            checkOutData.userSearchDetails.propertyId
+          );
+          const { status, message } = result;
+          if (status) {
+            setIsModalOpen(true);
+            setBookingStatus((prev) => {
+              return {
+                ...prev,
+                error: true,
+                message:
+                  "Payment failed! Unfortunately, your booking couldn't be processed. Please try again or reach out to our customer support for help.",
+              };
+            });
+          } else {
+            toast.error(message);
+          }
+        } catch (error) {
+          toast.error(error.message);
+          console.error("One of the operations failed:", error);
+        } finally {
+          setLoading((prev) => (prev = false));
         }
       });
 
@@ -188,61 +209,9 @@ const CheckOut = () => {
     // Check after the component is mounted
     checkRazorpayLoaded();
   }, []);
-  // useEffect(() => {
-  //   if (Object.keys(userInfo.billingInfo).length > 0) {
-  //     setCheckOutData((prev) => {
-  //       return {
-  //         ...prev,
-  //         billingInfo: userInfo.billingInfo,
-  //       };
-  //     });
-  //   }
-  //   if (Object.keys(userInfo.userSearchDetails).length > 0) {
-  //     setCheckOutData((prev) => {
-  //       return {
-  //         ...prev,
-  //         userSearchDetails: userInfo.userSearchDetails,
-  //       };
-  //     });
-  //   }
-  //   if (Object.keys(userInfo.checkOut).length > 0) {
-  //     setCheckOutData((prev) => {
-  //       return {
-  //         ...prev,
-  //         checkOut: userInfo.checkOut,
-  //       };
-  //     });
-  //   }
-
-  //   if (
-  //     Object.keys(userInfo.billingInfo).length === 0 &&
-  //     Object.keys(userInfo.checkOut).length === 0 &&
-  //     Object.keys(userInfo.userSearchDetails).length > 0
-  //   ) {
-  //     setIsModalOpen(true);
-  //     setCheckOutData((prev) => {
-  //       return {
-  //         ...prev,
-  //         userSearchDetails: {},
-  //       };
-  //     });
-  //     setBookingStatus((prev) => {
-  //       return {
-  //         ...prev,
-  //         success: false,
-  //         error: false,
-  //         loading: false,
-  //         afterOrderId: true,
-  //         sessionExpired: false,
-  //         message:
-  //           "Oops! Something went wrong with your orderId. Please start the booking process again.",
-  //       };
-  //     });
-  //   }
-  // }, [userInfo.userSearchDetails, userInfo.checkOut, userInfo.billingInfo]);
   useEffect(() => {
     if (Object.keys(checkOutData.checkOut).length > 0) {
-      timer = setInterval(() => {
+      timer = setInterval(async () => {
         const userD = new Date(checkOutData.checkOut.expiresAt);
         const difference =
           new Date(
@@ -256,29 +225,37 @@ const CheckOut = () => {
 
         if (difference <= 0) {
           //console.log(userInfo.cartInfo);
-          userActions.handlUpdateRoomsAfterExpiry(checkOutData.cartInfo);
-          userActions.handleUpdateOrderById({
-            orderId: checkOutData.checkOut.orderId,
-            orderStatus: "expired",
-            billingInfo: {
-              ...checkOutData.billingInfo,
-              paymentStatus: "Failed",
-            },
-          });
-          setIsModalOpen(true);
-          setBookingStatus((prev) => {
-            return {
-              ...prev,
-              success: false,
-              error: false,
-              loading: false,
-              sessionExpired: true,
-              message:
-                " Your session has expired due to inactivity for security and availability purposes. Please start the booking process again.",
-            };
-          });
-          clearInterval(timer);
-          setCountdown({ minutes: 0, seconds: 0 });
+          setLoading((prev) => (prev = true));
+          try {
+            const data = await userActions.handlUpdateRoomsAfterExpiry(
+              {
+                roomInfo: checkOutData.cartInfo,
+                orderId: checkOutData.checkOut.orderId,
+              },
+              checkOutData.userSearchDetails.propertyId
+            );
+            if (data.status) {
+              setIsModalOpen(true);
+              setBookingStatus((prev) => {
+                return {
+                  ...prev,
+                  sessionExpired: true,
+                  message:
+                    " Your session has expired due to inactivity for security and availability purposes. Please start the booking process again.",
+                };
+              });
+            } else {
+              toast.error(data.message);
+            }
+          } catch (error) {
+            toast.error(error.message);
+            console.error("One of the operations failed:", error);
+          } finally {
+            setLoading((prev) => (prev = false));
+            clearInterval(timer);
+            setCountdown({ minutes: 0, seconds: 0 });
+          }
+
           return;
         }
         const res = calculateTime(difference);
@@ -290,7 +267,7 @@ const CheckOut = () => {
     };
   }, [checkOutData.checkOut]);
   useEffect(() => {
-    const id = searchParams.get("orderId");
+    setLoading(true);
     const fetchOrderDetails = async (id) => {
       try {
         const response = await axios.get(
@@ -312,24 +289,103 @@ const CheckOut = () => {
             billingInfo,
             customerInfo,
           } = data.data;
-          setCheckOutData((prev) => {
-            return {
-              ...prev,
-              checkOut,
-              userSearchDetails,
-              billingInfo,
-              cartInfo,
-              customerInfo,
-            };
-          });
+
+          switch (checkOut.orderStatus) {
+            case "created":
+              setCheckOutData((prev) => {
+                return {
+                  ...prev,
+                  checkOut,
+                  userSearchDetails,
+                  billingInfo,
+                  cartInfo,
+                  customerInfo,
+                };
+              });
+              break;
+            case "Paid":
+              setCheckOutData((prev) => {
+                return {
+                  ...prev,
+                  checkOut: {},
+                  billingInfo: {},
+                  userSearchDetails: {},
+                  cartInfo: [],
+                  customerInfo: {},
+                };
+              });
+              setIsModalOpen(true);
+              setBookingStatus((prev) => {
+                return {
+                  ...prev,
+                  success: true,
+                  message:
+                    "Your booking has been successfully confirmed! Thank you for choosing Shey Hotels. You will receive a confirmation email shortly with your booking details.",
+                };
+              });
+              break;
+            case "Failed":
+              setCheckOutData((prev) => {
+                return {
+                  ...prev,
+                  checkOut: {},
+                  billingInfo: {},
+                  userSearchDetails: {},
+                  cartInfo: [],
+                  customerInfo: {},
+                };
+              });
+              setIsModalOpen(true);
+              setBookingStatus((prev) => {
+                return {
+                  ...prev,
+                  error: true,
+                  message:
+                    "Payment failed! Unfortunately, your booking couldn't be processed. Please try again or reach out to our customer support for help.",
+                };
+              });
+              break;
+            case "expired":
+              setCheckOutData((prev) => {
+                return {
+                  ...prev,
+                  checkOut: {},
+                  billingInfo: {},
+                  userSearchDetails: {},
+                  cartInfo: [],
+                  customerInfo: {},
+                };
+              });
+              setIsModalOpen(true);
+              setBookingStatus((prev) => {
+                return {
+                  ...prev,
+                  sessionExpired: true,
+                  message:
+                    " Your session has expired due to inactivity for security and availability purposes. Please start the booking process again.",
+                };
+              });
+              break;
+          }
         } else {
           toast.error(data.message);
+          setIsModalOpen(true);
+          setBookingStatus((prev) => {
+            return {
+              ...prev,
+              notFound: true,
+              message:
+                "Order not found! We couldn't locate the requested booking. Please verify the order details or contact customer support for assistance.",
+            };
+          });
         }
       } catch (error) {
         toast.error(error.message);
+      } finally {
+        setLoading(false);
       }
     };
-    fetchOrderDetails(id);
+    fetchOrderDetails(searchParams.get("orderId"));
   }, [searchParams]);
 
   return (
@@ -476,60 +532,42 @@ const CheckOut = () => {
             <Modal.Title>Session TimeOut</Modal.Title>
           </Modal.Header>
         )}
-        {bookingStatus.afterOrderId && (
+        {bookingStatus.notFound && (
           <Modal.Header>
-            <Modal.Title>Something went wrong</Modal.Title>
+            <Modal.Title>Something Went Wrong</Modal.Title>
           </Modal.Header>
         )}
-        {bookingStatus.loading && (
+
+        {!bookingStatus.sessionExpired && !bookingStatus.notFound && (
           <Modal.Header>
-            <Modal.Title>Booking InProgress...</Modal.Title>
+            <Modal.Title>Booking Creation</Modal.Title>
           </Modal.Header>
         )}
-        {!bookingStatus.loading &&
-          !bookingStatus.sessionExpired &&
-          !bookingStatus.afterOrderId && (
-            <Modal.Header>
-              <Modal.Title>Booking Creation</Modal.Title>
-            </Modal.Header>
-          )}
 
         <Modal.Body>
-          {bookingStatus.loading && (
-            <div>
-              <Loader />
-            </div>
-          )}
           {bookingStatus.success && bookingStatus.message}
           {bookingStatus.error && bookingStatus.message}
           {bookingStatus.sessionExpired && bookingStatus.message}
-          {bookingStatus.afterOrderId && bookingStatus.message}
+          {bookingStatus.notFound && bookingStatus.message}
         </Modal.Body>
         <Modal.Footer>
-          {!bookingStatus.loading &&
-            (bookingStatus.afterOrderId ? (
-              <Link
-                to="/hotel-management"
-                style={{ background: "green" }}
-                onClick={() => {
-                  setIsModalOpen(false);
-                }}
-              >
-                Go to Home
-              </Link>
-            ) : (
-              <Link
-                to="/hotel-management"
-                style={{ background: "green" }}
-                onClick={() => {
-                  setIsModalOpen(false);
-                }}
-              >
-                Continue Booking
-              </Link>
-            ))}
+          <Link
+            to="/hotel-management"
+            style={{ background: "green" }}
+            onClick={() => {
+              setIsModalOpen(false);
+            }}
+          >
+            Continue Booking
+          </Link>
         </Modal.Footer>
       </Modal>
+
+      {loading && (
+        <LoaderWrapper>
+          <Loader />
+        </LoaderWrapper>
+      )}
     </React.Fragment>
   );
 };

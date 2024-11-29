@@ -32,9 +32,7 @@ const AuthContext = createContext({
     handleUserSearchDetails: () => {},
     handleCreateOrderId: () => {},
     handlUpdateRoomsAfterExpiry: () => {},
-    handleSessionEnd: () => {},
     handleForFailedBookingPayload: () => {},
-    handleUpdateOrderById: () => {},
   },
 });
 
@@ -208,11 +206,11 @@ export const AuthProvider = ({ children }) => {
     // });
   };
 
-  const handleBookingPayload = async (bookingPayload) => {
+  const handleBookingPayload = async (bookingPayload, id) => {
     console.log(bookingPayload);
     try {
       const response = await axios.post(
-        `${process.env.REACT_APP_API_URL}v1/api/bookings/property/${userToken.userSearchDetails.propertyId}/create-booking/`,
+        `${process.env.REACT_APP_API_URL}v1/api/bookings/property/${id}/create-booking/`,
         { ...bookingPayload },
         {
           headers: {
@@ -333,13 +331,12 @@ export const AuthProvider = ({ children }) => {
       toast.error(error.message);
     }
   };
-  const handleUpdateOrderById = async (updateOrderObj) => {
-    console.log(updateOrderObj);
 
+  const handlUpdateRoomsAfterExpiry = async (cartData, id) => {
     try {
       const response = await axios.put(
-        `${process.env.REACT_APP_API_URL}v1/api/orders/update-by-id/${updateOrderObj.orderId}`,
-        { ...updateOrderObj },
+        `${process.env.REACT_APP_API_URL}v1/api/bookings/property/${id}/update-rooms-after-expxiry/`,
+        { ...cartData },
         {
           headers: {
             Authorization: `Bearer ${userToken.token}`,
@@ -355,36 +352,10 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const handlUpdateRoomsAfterExpiry = async (cartData) => {
-    try {
-      const response = await axios.put(
-        `${process.env.REACT_APP_API_URL}v1/api/bookings/property/${userToken.userSearchDetails.propertyId}/update-rooms-after-expxiry/`,
-        { roomInfo: cartData },
-        {
-          headers: {
-            Authorization: `Bearer ${userToken.token}`,
-            "Content-Type": "application/json",
-          },
-          withCredentials: true,
-        }
-      );
-      const {
-        data: { status, message },
-      } = response;
-      if (status) {
-        toast.success(message);
-      } else {
-        toast.error(message);
-      }
-    } catch (error) {
-      toast.error(error.message);
-    }
-  };
-
-  const handleForFailedBookingPayload = async (failedObj) => {
+  const handleForFailedBookingPayload = async (failedObj, id) => {
     try {
       const response = await axios.post(
-        `${process.env.REACT_APP_API_URL}v1/api/bookings/property/${userToken.userSearchDetails.propertyId}/create-failed-booking/`,
+        `${process.env.REACT_APP_API_URL}v1/api/bookings/property/${id}/create-failed-booking/`,
         { ...failedObj },
         {
           headers: {
@@ -400,20 +371,12 @@ export const AuthProvider = ({ children }) => {
       toast.error(error.message);
     }
   };
-  const handleSessionEnd = () => {
-    setUserToken((prev) => {
-      return {
-        ...prev,
-        isSessionEnd: true,
-      };
-    });
-  };
 
   useEffect(() => {
     if (userToken.isloggedIn && userToken.token) {
       handleGetUserDetails();
     }
-  }, [userToken.token, userToken.isloggedIn, userToken.isSessionEnd]);
+  }, [userToken.token, userToken.isloggedIn]);
   return (
     <React.Fragment>
       <AuthContext.Provider
@@ -433,8 +396,6 @@ export const AuthProvider = ({ children }) => {
             handleCreateOrderId,
             handlUpdateRoomsAfterExpiry,
             handleForFailedBookingPayload,
-            handleUpdateOrderById,
-            handleSessionEnd,
           },
         }}
       >
